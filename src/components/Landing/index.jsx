@@ -28,9 +28,9 @@ export default function Home() {
 						fill="white"
 					/>
 				</svg>
-				<p>Cientista da computação - UFJ</p>
-				<p>MBA Engenharia de software - USP</p>
-				<p>Full stack developer & Designer</p>
+				<p>Mestrando Inteligencia Artificial - HGU</p>
+				<p>MBA Engenharia de Software - USP</p>
+				<p>Cientista da Computação - UFJ</p>
 			</div>
 		</main>
 	);
