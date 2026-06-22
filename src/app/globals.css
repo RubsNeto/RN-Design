@@ -1,24 +1,12 @@
-/* Gotham Font Family */
-@font-face {
-    font-family: 'Gotham';
-    src: url('/fonts/Gotham_regular.otf') format('opentype');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
+/* Fontes do Design System: apenas Inter (principal) + Venzoena (secundária) */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 
+/* Venzoena — fonte secundária de display (peso único; range evita faux-bold) */
 @font-face {
-    font-family: 'Gotham';
-    src: url('/fonts/Gotham-SemiBold.otf') format('opentype');
-    font-weight: 600;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Gotham';
-    src: url('/fonts/Gotham_black.otf') format('opentype');
-    font-weight: 900;
+    font-family: 'Venzoena';
+    src: url('/fonts/Venzoena.ttf') format('truetype'),
+         url('/fonts/Venzoena.otf') format('opentype');
+    font-weight: 100 900;
     font-style: normal;
     font-display: swap;
 }
@@ -47,8 +35,11 @@
     --gradient-end: #90CAF9;
     --gradient-bg: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%);
 
-    /* Font family */
-    --font-primary: 'Gotham', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    /* Fontes — somente Inter (principal) e Venzoena (secundária) */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-display: 'Venzoena', 'Inter', sans-serif;
+    /* labels usavam mono; agora resolvem para a principal (Inter) */
+    --font-mono: var(--font-primary);
 }
 
 body {
@@ -66,7 +57,7 @@ body {
 }
 
 ::-webkit-scrollbar-track {
-    background: #0a0a0a;
+    background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -83,7 +74,7 @@ body {
 /* Firefox scrollbar */
 * {
     scrollbar-width: thin;
-    scrollbar-color: #4FC3F7 #0a0a0a;
+    scrollbar-color: #4FC3F7 transparent;
 }
 
 h1,
@@ -282,4 +273,25 @@ a {
 
 .animated-underline:hover::after {
     width: 100%;
+}
+
+/* Seleção de texto na cor da marca */
+::selection {
+    background: rgba(79, 195, 247, 0.30);
+    color: inherit;
+}
+
+/* Foco acessível e consistente */
+:focus-visible {
+    outline: 2px solid #4FC3F7;
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* Form elements não herdam a fonte por padrão — força Inter em botões/inputs */
+button,
+input,
+textarea,
+select {
+    font-family: inherit;
 }

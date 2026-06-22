@@ -3,6 +3,9 @@ import styles from './page.module.scss'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { AnimatePresence } from 'framer-motion';
 import Preloader from '../components/Preloader';
+import { HandWrittenTitle } from '../components/ui/HandWrittenTitle';
+import GlobeSection from '../components/GlobeSection';
+import SkewCards from '../components/SkewCards';
 
 // Lazy load heavy components
 const Landing = lazy(() => import('../components/Landing'));
@@ -40,7 +43,7 @@ export default function Home() {
           setIsLoading(false);
           document.body.style.cursor = 'default'
           window.scrollTo(0, 0);
-        }, 2000)
+        }, 1200)
       }
     )()
 
@@ -66,12 +69,17 @@ export default function Home() {
         <div id="services">
           <Services />
         </div>
+        <SkewCards />
+        <GlobeSection />
         <Process />
         <div id="work">
           <Projects />
         </div>
         <Description />
         <SlidingImages />
+        <section style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0f1419 50%, #0a0a0a 100%)' }}>
+          <HandWrittenTitle prefix="Vamos criar algo" highlight="excepcional" subtitle="Disponível para novos projetos" />
+        </section>
         <div id="contact">
           <Contact />
         </div>

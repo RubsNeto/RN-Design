@@ -60,10 +60,11 @@
         justify-content: center;
         gap: 20px;
         margin-bottom: 30px;
-        font-size: 14px;
-        font-weight: 600;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 500;
         text-transform: uppercase;
-        letter-spacing: 4px;
+        letter-spacing: 3px;
         color: #4FC3F7;
 
         .labelLine {
@@ -74,8 +75,10 @@
     }
 
     .title {
-        font-size: clamp(40px, 6vw, 72px);
+        font-family: var(--font-primary);
+        font-size: clamp(40px, 6vw, 76px);
         font-weight: 900;
+        letter-spacing: -0.02em;
         color: #fff;
         margin: 0 0 24px 0;
         line-height: 1.1;
@@ -240,9 +243,12 @@
     .content {
         flex: 1;
         position: relative;
-        background: rgba(20, 20, 30, 0.6);
-        border-radius: 20px;
-        border: 1px solid rgba(79, 195, 247, 0.1);
+        background: linear-gradient(135deg, rgba(40, 62, 96, 0.42), rgba(18, 26, 42, 0.34));
+        -webkit-backdrop-filter: blur(13px) saturate(150%);
+        backdrop-filter: blur(13px) saturate(150%);
+        border-radius: 18px;
+        border: 1px solid rgba(120, 180, 230, 0.16);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08);
         overflow: hidden;
         transition: background 0.3s ease, border-color 0.3s ease;
 

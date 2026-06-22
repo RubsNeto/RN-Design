@@ -1,0 +1,91 @@
+"use client";
+
+import React, { useMemo, useState } from "react";
+
+export const TextReveal = React.memo(function TextReveal({
+	text,
+	as: Component = "span",
+	href,
+	target,
+	className = "",
+	style,
+	staggerDelay = 25,
+	duration = 250,
+	easing = "ease-in-out",
+	color = "inherit",
+	hoverColor = "#4FC3F7",
+	direction = "up",
+	onClick,
+}) {
+	const [hovered, setHovered] = useState(false);
+
+	const chars = useMemo(() => {
+		if (typeof Intl !== "undefined" && Intl.Segmenter) {
+			const segmenter = new Intl.Segmenter("pt", { granularity: "grapheme" });
+			return Array.from(segmenter.segment(text), (s) => s.segment);
+		}
+		return [...text];
+	}, [text]);
+
+	const sign = direction === "up" ? 1 : -1;
+
+	const rootProps = {
+		className,
+		style: {
+			display: "inline-block",
+			position: "relative",
+			textDecoration: "none",
+			overflow: "hidden",
+			cursor: "pointer",
+			userSelect: "none",
+			color: hovered ? hoverColor : color,
+			transition: "color 0.35s ease",
+			lineHeight: 1,
+			...style,
+		},
+		onMouseEnter: () => setHovered(true),
+		onMouseLeave: () => setHovered(false),
+		onClick,
+		"aria-label": text,
+	};
+
+	if (Component === "a") {
+		rootProps.href = href ?? "#";
+		if (target) rootProps.target = target;
+		if (target === "_blank") rootProps.rel = "noopener noreferrer";
+	}
+
+	return (
+		<Component {...rootProps}>
+			<span
+				style={{
+					display: "inline-flex",
+					overflow: "hidden",
+					position: "relative",
+					height: "1em",
+				}}
+				aria-hidden="true"
+			>
+				{chars.map((char, i) => (
+					<span
+						key={i}
+						style={{
+							display: "inline-block",
+							position: "relative",
+							willChange: "transform",
+							textShadow: `0 ${sign}em currentColor`,
+							transition: `transform ${duration}ms ${easing}`,
+							transitionDelay: `${i * staggerDelay}ms`,
+							transform: hovered ? `translateY(${-sign}em)` : "translateY(0)",
+						}}
+					>
+						{char === " " ? "\u00A0" : char}
+					</span>
+				))}
+			</span>
+		</Component>
+	);
+});
+
+TextReveal.displayName = "TextReveal";
+export default TextReveal;

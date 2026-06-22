@@ -1,0 +1,36 @@
+.head {
+	margin-bottom: 10px;
+}
+
+.label {
+	display: inline-block;
+	font-family: var(--font-primary);
+	text-transform: uppercase;
+	letter-spacing: 3px;
+	font-size: 13px;
+	font-weight: 500;
+	color: #4fc3f7;
+	margin-bottom: 14px;
+}
+
+.title {
+	font-family: var(--font-primary);
+	margin: 0;
+	font-size: clamp(28px, 4vw, 52px);
+	font-weight: 900;
+	letter-spacing: -0.02em;
+	line-height: 1.1;
+	color: #fff;
+}
+
+.accent {
+	background: linear-gradient(135deg, #4fc3f7, #00bcd4 50%, #0288d1);
+	-webkit-background-clip: text;
+	background-clip: text;
+	-webkit-text-fill-color: transparent;
+}
+
+.shot {
+	object-fit: cover;
+	object-position: top center;
+}
