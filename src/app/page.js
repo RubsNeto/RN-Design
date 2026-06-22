@@ -3,7 +3,6 @@ import styles from './page.module.scss'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { AnimatePresence } from 'framer-motion';
 import Preloader from '../components/Preloader';
-import { HandWrittenTitle } from '../components/ui/HandWrittenTitle';
 import GlobeSection from '../components/GlobeSection';
 import SkewCards from '../components/SkewCards';
 
@@ -13,7 +12,6 @@ const About = lazy(() => import('../components/About'));
 const Services = lazy(() => import('../components/Services'));
 const Process = lazy(() => import('../components/Process'));
 const Projects = lazy(() => import('../components/Projects'));
-const Description = lazy(() => import('../components/Description'));
 const SlidingImages = lazy(() => import('../components/SlidingImages'));
 const Contact = lazy(() => import('../components/Contact'));
 
@@ -75,11 +73,7 @@ export default function Home() {
         <div id="work">
           <Projects />
         </div>
-        <Description />
         <SlidingImages />
-        <section style={{ background: 'linear-gradient(180deg, #0a0a0a 0%, #0f1419 50%, #0a0a0a 100%)' }}>
-          <HandWrittenTitle prefix="Vamos criar algo" highlight="excepcional" subtitle="Disponível para novos projetos" />
-        </section>
         <div id="contact">
           <Contact />
         </div>
