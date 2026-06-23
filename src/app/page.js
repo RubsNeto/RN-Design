@@ -25,17 +25,22 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    let locomotiveScroll;
+    let lenis;
+    let rafId;
     (
       async () => {
-        const LocomotiveScroll = (await import('locomotive-scroll')).default
-        locomotiveScroll = new LocomotiveScroll({
-          lenisOptions: {
-            duration: 1.2,
-            smoothWheel: true,
-            wheelMultiplier: 0.8,
-          }
+        const Lenis = (await import('lenis')).default
+        lenis = new Lenis({
+          duration: 1.2,
+          smoothWheel: true,
+          wheelMultiplier: 0.8,
         });
+
+        const raf = (time) => {
+          lenis.raf(time);
+          rafId = requestAnimationFrame(raf);
+        };
+        rafId = requestAnimationFrame(raf);
 
         setTimeout(() => {
           setIsLoading(false);
@@ -46,8 +51,11 @@ export default function Home() {
     )()
 
     return () => {
-      if (locomotiveScroll) {
-        locomotiveScroll.destroy();
+      if (lenis) {
+        lenis.destroy();
+      }
+      if (rafId) {
+        cancelAnimationFrame(rafId);
       }
     }
   }, [])
