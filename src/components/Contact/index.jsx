@@ -1,8 +1,8 @@
 "use client";
 
 import styles from "./style.module.scss";
-import { useRef } from "react";
-import { useScroll, motion, useTransform } from "framer-motion";
+import { motion } from "framer-motion";
+import { HandWrittenTitle } from "../ui/HandWrittenTitle";
 
 const social = [
 	{
@@ -47,17 +47,21 @@ const Arrow = () => (
 );
 
 export default function Index() {
-	const container = useRef(null);
-	const { scrollYProgress } = useScroll({
-		target: container,
-		offset: ["start end", "end end"],
-	});
-	const y = useTransform(scrollYProgress, [0, 1], [-200, 0]);
-
 	return (
-		<motion.div style={{ y }} ref={container} className={styles.contact}>
-			<div className={styles.body}>
-				{/* Redes — pequenas, Gotham Black, contorno que preenche no hover */}
+		<div className={styles.contact}>
+			{/* CTA centralizado no centro da tela */}
+			<div className={styles.cta}>
+				<HandWrittenTitle
+					prefix="Vamos criar algo"
+					highlight="excepcional"
+					subtitle="Disponível para novos projetos"
+					ctaLabel="Entre em contato"
+					ctaHref="https://wa.me/5562999299020?text=Vim%20do%20site%20e%20gostaria%20de%20saber%20mais"
+				/>
+			</div>
+
+			{/* Rodapé ancorado embaixo (estático) */}
+			<div className={styles.footerBottom}>
 				<nav className={styles.links}>
 					{social.map((s, i) => (
 						<motion.a
@@ -77,22 +81,21 @@ export default function Index() {
 						</motion.a>
 					))}
 				</nav>
-			</div>
 
-			{/* Wordmark gigante com fade-out + copyright por cima */}
-			<div className={styles.wordmarkWrap}>
-				<motion.div
-					className={styles.wordmark}
-					aria-hidden="true"
-					initial={{ opacity: 0, y: 60 }}
-					whileInView={{ opacity: 1, y: 0 }}
-					viewport={{ once: true, amount: 0.2 }}
-					transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-				>
-					RN Design
-				</motion.div>
-				<span className={styles.copyright}>2026 © RN Design</span>
+				<div className={styles.wordmarkWrap}>
+					<motion.div
+						className={styles.wordmark}
+						aria-hidden="true"
+						initial={{ opacity: 0, y: 50 }}
+						whileInView={{ opacity: 1, y: 0 }}
+						viewport={{ once: true, amount: 0.2 }}
+						transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+					>
+						RN Design
+					</motion.div>
+					<span className={styles.copyright}>2026 © RN Design</span>
+				</div>
 			</div>
-		</motion.div>
+		</div>
 	);
 }

@@ -1,26 +1,43 @@
 .contact {
-	color: #fff;
 	position: relative;
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	color: #fff;
 	overflow: hidden;
 	background: linear-gradient(180deg, #0a0a0a 0%, #0f1419 55%, #060a0e 100%);
 	contain: layout style paint;
 }
 
-.body {
+/* CTA centralizado no meio da tela */
+.cta {
 	position: relative;
 	z-index: 2;
-	max-width: 1400px;
-	margin: 0 auto;
-	padding: 44px 40px 0;
+	width: 100%;
+	padding: 0 24px;
 }
 
-/* ===== Redes: Gotham Black, pequenas, contorno + preenchimento no hover ===== */
+/* Rodapé estático ancorado embaixo */
+.footerBottom {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	z-index: 3;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+
+/* ===== Redes: pequenas, contorno + preenchimento no hover ===== */
 .links {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	justify-content: center;
 	gap: 13px 28px;
+	margin-bottom: 4px;
 }
 
 .link {
@@ -79,7 +96,7 @@
 .wordmarkWrap {
 	position: relative;
 	z-index: 1;
-	margin-top: 12px;
+	width: 100%;
 }
 
 .wordmark {

@@ -3,7 +3,6 @@ import styles from './page.module.scss'
 import { useEffect, useState, lazy, Suspense } from 'react'
 import { AnimatePresence } from 'framer-motion';
 import Preloader from '../components/Preloader';
-import { HandWrittenTitle } from '../components/ui/HandWrittenTitle';
 import GlobeSection from '../components/GlobeSection';
 import SkewCards from '../components/SkewCards';
 
@@ -83,15 +82,6 @@ export default function Home() {
           <Projects />
         </div>
         <SlidingImages />
-        <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: 'linear-gradient(180deg, #0a0a0a 0%, #0f1419 50%, #0a0a0a 100%)' }}>
-          <HandWrittenTitle
-            prefix="Vamos criar algo"
-            highlight="excepcional"
-            subtitle="Disponível para novos projetos"
-            ctaLabel="Entre em contato"
-            ctaHref="https://wa.me/5562999299020?text=Vim%20do%20site%20e%20gostaria%20de%20saber%20mais"
-          />
-        </section>
         <div id="contact">
           <Contact />
         </div>
