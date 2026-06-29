@@ -56,13 +56,18 @@
 	letter-spacing: -0.01em;
 	line-height: 1;
 
-	// preenchido (branco) por padrão
+	// branco sólido por padrão (sem contorno); cor da marca no hover
 	color: #fff;
-	transition: color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+	-webkit-text-fill-color: #fff;
+	background-image: var(--brand, linear-gradient(#4fc3f7, #0288d1));
+	-webkit-background-clip: text;
+	background-clip: text;
+	transition: -webkit-text-fill-color 0.35s ease, color 0.35s ease;
 }
 
 .link:hover .linkText {
-	color: var(--brand, #4fc3f7);
+	color: transparent;
+	-webkit-text-fill-color: transparent;
 }
 
 .arrow {
@@ -79,7 +84,7 @@
 .link:hover .arrow {
 	opacity: 1;
 	transform: translate(0, 0);
-	color: var(--brand, #4fc3f7);
+	color: var(--brand-solid, #4fc3f7);
 }
 
 /* ===== Wordmark gigante com fade-out + copyright por cima ===== */
@@ -129,13 +134,14 @@
 /* Touch: sem hover -> cada rede na sua cor e seta visível */
 @media (hover: none) {
 	.linkText {
-		color: var(--brand, #4fc3f7);
+		color: transparent;
+		-webkit-text-fill-color: transparent;
 	}
 
 	.arrow {
 		opacity: 1;
 		transform: none;
-		color: var(--brand, #4fc3f7);
+		color: var(--brand-solid, #4fc3f7);
 	}
 }
 

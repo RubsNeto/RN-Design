@@ -8,17 +8,20 @@ const social = [
 	{
 		label: "Instagram",
 		href: "https://www.instagram.com/rubs_neto/",
-		color: "#E1306C",
+		brand: "linear-gradient(45deg, #F58529 0%, #DD2A7B 45%, #8134AF 100%)",
+		solid: "#DD2A7B",
 	},
 	{
 		label: "LinkedIn",
 		href: "https://www.linkedin.com/in/dev-rubens/",
-		color: "#0A66C2",
+		brand: "linear-gradient(#0A66C2, #0A66C2)",
+		solid: "#0A66C2",
 	},
 	{
 		label: "WhatsApp",
 		href: "https://wa.me/5562999299020?text=Vim%20do%20site%20e%20gostaria%20de%20saber%20mais",
-		color: "#25D366",
+		brand: "linear-gradient(#25D366, #25D366)",
+		solid: "#25D366",
 	},
 ];
 
@@ -73,7 +76,7 @@ export default function Index() {
 							target="_blank"
 							rel="noopener noreferrer"
 							className={styles.link}
-							style={{ "--brand": s.color }}
+							style={{ "--brand": s.brand, "--brand-solid": s.solid }}
 							custom={i}
 							variants={reveal}
 							initial="hidden"
