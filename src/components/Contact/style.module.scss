@@ -56,24 +56,13 @@
 	letter-spacing: -0.01em;
 	line-height: 1;
 
-	// contorno + preenchimento nas cores originais (ciano da marca)
-	color: transparent;
-	-webkit-text-stroke: 1px rgba(159, 220, 255, 0.55);
-
-	background-image: linear-gradient(180deg, #4fc3f7, #0288d1);
-	background-repeat: no-repeat;
-	background-size: 100% 0%;
-	background-position: 0 100%;
-	-webkit-background-clip: text;
-	background-clip: text;
-
-	transition: background-size 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-		-webkit-text-stroke-color 0.5s ease;
+	// preenchido (branco) por padrão
+	color: #fff;
+	transition: color 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .link:hover .linkText {
-	background-size: 100% 100%;
-	-webkit-text-stroke-color: transparent;
+	color: var(--brand, #4fc3f7);
 }
 
 .arrow {
@@ -90,7 +79,7 @@
 .link:hover .arrow {
 	opacity: 1;
 	transform: translate(0, 0);
-	color: #4fc3f7;
+	color: var(--brand, #4fc3f7);
 }
 
 /* ===== Wordmark gigante com fade-out + copyright por cima ===== */
@@ -137,17 +126,16 @@
 	pointer-events: none;
 }
 
-/* Touch: sem hover -> links já preenchidos e seta visível */
+/* Touch: sem hover -> cada rede na sua cor e seta visível */
 @media (hover: none) {
 	.linkText {
-		background-size: 100% 100%;
-		-webkit-text-stroke-color: transparent;
+		color: var(--brand, #4fc3f7);
 	}
 
 	.arrow {
 		opacity: 1;
 		transform: none;
-		color: #4fc3f7;
+		color: var(--brand, #4fc3f7);
 	}
 }
 
