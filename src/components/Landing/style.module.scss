@@ -251,11 +251,14 @@ $ease: cubic-bezier(0.22, 1, 0.36, 1);
 @media (max-width: 768px) {
   .landing {
     .content {
-      top: 22%;
+      top: auto;
+      bottom: 16vh;
       left: 24px;
       right: 24px;
       max-width: none;
       text-align: left;
+      transform: none;
+      animation: heroIn 1s $ease 1.2s both;
     }
 
     .title {
@@ -270,15 +273,15 @@ $ease: cubic-bezier(0.22, 1, 0.36, 1);
       margin: 16px 0 0;
     }
 
-    // Formações alinhadas à esquerda, logo abaixo do conteúdo (sem colidir)
+    // Qualificações: meio da tela, alinhadas à direita
     .formations {
-      top: auto;
-      bottom: 22vh;
-      left: 24px;
-      right: auto;
-      text-align: left;
+      top: 36%;
+      bottom: auto;
+      left: auto;
+      right: 24px;
+      text-align: right;
 
-      svg { width: 14px; height: 14px; margin-bottom: 12px; }
+      svg { width: 14px; height: 14px; margin: 0 0 12px auto; }
       p { font-size: 13px; }
     }
 
