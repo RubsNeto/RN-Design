@@ -11,37 +11,36 @@
 	z-index: 2;
 	max-width: 1400px;
 	margin: 0 auto;
-	padding: 56px 40px 0;
+	padding: 44px 40px 0;
 }
 
-/* ===== Links de redes: pequenos, contornados, preenchem no hover ===== */
+/* ===== Redes: Gotham Black, pequenas, contorno + preenchimento no hover ===== */
 .links {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 18px 36px;
-	padding-bottom: 28px;
-	border-bottom: 1px solid rgba(159, 220, 255, 0.14);
+	gap: 16px 32px;
 }
 
 .link {
 	display: inline-flex;
 	align-items: center;
-	gap: 8px;
+	gap: 7px;
 	text-decoration: none;
 }
 
 .linkText {
 	display: inline-block;
-	font-family: var(--font-display);
-	font-size: clamp(18px, 2vw, 28px);
-	font-weight: 700;
-	letter-spacing: 0.01em;
+	font-family: "Gotham Black", sans-serif;
+	font-size: clamp(15px, 1.6vw, 22px);
+	font-weight: 900;
+	letter-spacing: 0.02em;
 	line-height: 1;
+	text-transform: uppercase;
 
 	// contorno limpo + preenchimento que sobe no hover
 	color: transparent;
-	-webkit-text-stroke: 1px rgba(255, 255, 255, 0.72);
+	-webkit-text-stroke: 1px rgba(255, 255, 255, 0.7);
 
 	background-image: linear-gradient(180deg, #4fc3f7, #0288d1);
 	background-repeat: no-repeat;
@@ -60,12 +59,12 @@
 }
 
 .arrow {
-	width: 15px;
-	height: 15px;
+	width: 13px;
+	height: 13px;
 	flex-shrink: 0;
 	color: rgba(255, 255, 255, 0.5);
 	opacity: 0;
-	transform: translate(-6px, 4px);
+	transform: translate(-5px, 3px);
 	transition: opacity 0.4s ease,
 		transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), color 0.4s ease;
 }
@@ -76,73 +75,14 @@
 	color: #4fc3f7;
 }
 
-/* ===== Bloco de informações ===== */
-.info {
-	display: flex;
-	justify-content: space-between;
-	flex-wrap: wrap;
-	gap: 26px;
-	margin-top: 28px;
-	padding-bottom: 24px;
-
-	> div {
-		display: flex;
-		gap: 40px;
-		align-items: flex-end;
-	}
-
-	span {
-		display: flex;
-		flex-direction: column;
-		gap: 10px;
-	}
-
-	h3 {
-		margin: 0;
-		color: rgba(255, 255, 255, 0.4);
-		font-weight: 400;
-		font-size: 13px;
-		text-transform: uppercase;
-		letter-spacing: 2px;
-	}
-
-	p,
-	a {
-		margin: 0;
-		color: rgba(255, 255, 255, 0.85);
-		font-size: 15px;
-		text-decoration: none;
-		transition: color 0.3s ease;
-	}
-
-	a {
-		position: relative;
-
-		&::after {
-			content: "";
-			display: block;
-			width: 0%;
-			height: 1px;
-			margin-top: 4px;
-			background: #4fc3f7;
-			transition: width 0.3s ease;
-		}
-
-		&:hover {
-			color: #4fc3f7;
-
-			&::after {
-				width: 100%;
-			}
-		}
-	}
-}
-
-/* ===== Wordmark gigante com fade-out ===== */
-.wordmark {
+/* ===== Wordmark gigante com fade-out + copyright por cima ===== */
+.wordmarkWrap {
 	position: relative;
 	z-index: 1;
-	margin-top: -1.5vw;
+	margin-top: 12px;
+}
+
+.wordmark {
 	text-align: center;
 	font-family: var(--font-primary);
 	font-weight: 900;
@@ -162,6 +102,22 @@
 	mask-image: linear-gradient(180deg, #000 0%, #000 36%, transparent 88%);
 }
 
+// "2026 © RN Design" sobreposto à base do wordmark (na zona do fade-out)
+.copyright {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 11%;
+	text-align: center;
+	font-family: var(--font-primary);
+	font-size: 12px;
+	font-weight: 500;
+	letter-spacing: 2.5px;
+	text-transform: uppercase;
+	color: rgba(255, 255, 255, 0.5);
+	pointer-events: none;
+}
+
 /* Touch: sem hover -> links já preenchidos e seta visível */
 @media (hover: none) {
 	.linkText {
@@ -178,28 +134,21 @@
 
 @media (max-width: 768px) {
 	.body {
-		padding: 44px 20px 0;
+		padding: 36px 20px 0;
 	}
 
 	.links {
-		gap: 16px 26px;
-		padding-bottom: 24px;
-	}
-
-	.info {
-		flex-direction: column;
-		gap: 26px;
-		margin-top: 24px;
-
-		> div {
-			flex-wrap: wrap;
-			gap: 24px;
-		}
+		gap: 14px 22px;
 	}
 
 	.wordmark {
-		margin-top: 8px;
-		font-size: clamp(48px, 17vw, 130px);
+		font-size: clamp(46px, 17vw, 130px);
+	}
+
+	.copyright {
+		font-size: 11px;
+		letter-spacing: 2px;
+		bottom: 13%;
 	}
 }
 

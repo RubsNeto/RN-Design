@@ -20,7 +20,7 @@ const social = [
 ];
 
 const reveal = {
-	hidden: { opacity: 0, y: 26 },
+	hidden: { opacity: 0, y: 24 },
 	visible: (i = 0) => ({
 		opacity: 1,
 		y: 0,
@@ -57,7 +57,7 @@ export default function Index() {
 	return (
 		<motion.div style={{ y }} ref={container} className={styles.contact}>
 			<div className={styles.body}>
-				{/* Links de redes — pequenos, contornados, preenchem no hover */}
+				{/* Redes — pequenas, Gotham Black, contorno que preenche no hover */}
 				<nav className={styles.links}>
 					{social.map((s, i) => (
 						<motion.a
@@ -77,44 +77,22 @@ export default function Index() {
 						</motion.a>
 					))}
 				</nav>
-
-				<div className={styles.info}>
-					<div>
-						<span>
-							<h3>Versão</h3>
-							<p>2026 © RN Design</p>
-						</span>
-						<span>
-							<h3>Horário</h3>
-							<p>GMT-3</p>
-						</span>
-					</div>
-					<div>
-						<span>
-							<h3>Contato</h3>
-							<a
-								href="https://wa.me/5562999299020?text=Vim%20do%20site%20e%20gostaria%20de%20saber%20mais"
-								target="_blank"
-								rel="noopener noreferrer"
-							>
-								+55 62 99929-9020
-							</a>
-						</span>
-					</div>
-				</div>
 			</div>
 
-			{/* Wordmark gigante com fade-out */}
-			<motion.div
-				className={styles.wordmark}
-				aria-hidden="true"
-				initial={{ opacity: 0, y: 60 }}
-				whileInView={{ opacity: 1, y: 0 }}
-				viewport={{ once: true, amount: 0.2 }}
-				transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-			>
-				RN Design
-			</motion.div>
+			{/* Wordmark gigante com fade-out + copyright por cima */}
+			<div className={styles.wordmarkWrap}>
+				<motion.div
+					className={styles.wordmark}
+					aria-hidden="true"
+					initial={{ opacity: 0, y: 60 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.2 }}
+					transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+				>
+					RN Design
+				</motion.div>
+				<span className={styles.copyright}>2026 © RN Design</span>
+			</div>
 		</motion.div>
 	);
 }
