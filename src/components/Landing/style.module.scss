@@ -37,14 +37,15 @@ $ease: cubic-bezier(0.22, 1, 0.36, 1);
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   }
 
-  // Conteúdo principal (centro-esquerda)
+  // Conteúdo principal (centro-direita) — fica no espaço vazio à direita
   .content {
     position: absolute;
     z-index: 5;
     top: 50%;
-    left: clamp(24px, 6vw, 90px);
+    right: clamp(24px, 6vw, 90px);
     transform: translateY(-50%);
-    max-width: 640px;
+    max-width: min(44vw, 520px);
+    text-align: right;
     animation: heroInCenter 1.1s $ease 1.2s both;
   }
 
@@ -60,11 +61,11 @@ $ease: cubic-bezier(0.22, 1, 0.36, 1);
     color: #9fdcff;
     margin-bottom: 26px;
 
-    &::before {
+    &::after {
       content: '';
       width: 34px;
       height: 1px;
-      background: linear-gradient(90deg, #4fc3f7, transparent);
+      background: linear-gradient(90deg, transparent, #4fc3f7);
     }
   }
 
@@ -89,21 +90,21 @@ $ease: cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .role {
-    margin: 22px 0 0;
-    max-width: 30ch;
+    margin: 22px 0 0 auto;
+    max-width: 34ch;
     font-size: clamp(15px, 1.4vw, 19px);
     line-height: 1.55;
     color: rgba(233, 245, 255, 0.82);
     font-weight: 300;
   }
 
-  // Formações — coluna à direita (como antes)
+  // Formações — coluna à esquerda (espaço vazio do lado oposto ao texto)
   .formations {
     position: absolute;
     z-index: 5;
-    top: 38%;
-    right: clamp(48px, 16vw, 300px);
-    text-align: right;
+    top: 34%;
+    left: clamp(24px, 6vw, 90px);
+    text-align: left;
     animation: heroIn 1s $ease 1.4s both;
 
     svg {
@@ -254,6 +255,7 @@ $ease: cubic-bezier(0.22, 1, 0.36, 1);
       left: 24px;
       right: 24px;
       max-width: none;
+      text-align: left;
     }
 
     .title {
@@ -265,7 +267,7 @@ $ease: cubic-bezier(0.22, 1, 0.36, 1);
     }
 
     .role {
-      margin-top: 16px;
+      margin: 16px 0 0;
     }
 
     // Formações alinhadas à esquerda, logo abaixo do conteúdo (sem colidir)
