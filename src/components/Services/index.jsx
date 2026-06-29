@@ -13,37 +13,37 @@ export default function Services() {
             title: "UI/UX Design",
             stat: "Interfaces que encantam e convertem",
             theme: "200 85% 50%",
-            image: "/images/services/uiux.png",
+            image: "/images/services/uiux.webp",
         },
         {
             title: "Desenvolvimento Web",
             stat: "Sites rápidos, responsivos e escaláveis",
             theme: "190 90% 42%",
-            image: "/images/services/web.png",
+            image: "/images/services/web.webp",
         },
         {
             title: "Branding & Identidade",
             stat: "Marcas fortes e memoráveis",
             theme: "228 72% 56%",
-            image: "/images/services/branding.png",
+            image: "/images/services/branding.webp",
         },
         {
             title: "Marketing Digital",
             stat: "Crescimento orientado por dados",
             theme: "205 92% 46%",
-            image: "/images/services/marketing.png",
+            image: "/images/services/marketing.webp",
         },
         {
             title: "Consultoria",
             stat: "Estratégia para transformação digital",
             theme: "195 88% 44%",
-            image: "/images/services/consultoria.png",
+            image: "/images/services/consultoria.webp",
         },
         {
             title: "Manutenção & Suporte",
             stat: "Evolução contínua e suporte 24/7",
             theme: "210 68% 48%",
-            image: "/images/services/suporte.png",
+            image: "/images/services/suporte.webp",
         },
     ];
 

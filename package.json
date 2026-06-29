@@ -12,7 +12,6 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@splinetool/react-spline": "^2.2.6",
     "@splinetool/runtime": "^1.12.97",
     "clsx": "^2.1.1",
     "cobe": "^2.0.1",
@@ -26,5 +25,8 @@
     "react-dom": "18.2.0",
     "sass": "^1.64.0",
     "tailwind-merge": "^3.4.0"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.2"
   }
 }

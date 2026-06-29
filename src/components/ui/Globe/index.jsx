@@ -78,6 +78,7 @@ export function Globe({
 	const animRef = useRef(0);
 	const timeRef = useRef(0);
 	const dotsRef = useRef([]);
+	const visibleRef = useRef(true);
 
 	useEffect(() => {
 		const dots = [];
@@ -221,12 +222,48 @@ export function Globe({
 			}
 		}
 
-		animRef.current = requestAnimationFrame(draw);
+		if (visibleRef.current) {
+			animRef.current = requestAnimationFrame(draw);
+		}
 	}, [dotColor, arcColor, markerColor, autoRotateSpeed, connections, markers, rotationRef]);
 
 	useEffect(() => {
-		animRef.current = requestAnimationFrame(draw);
-		return () => cancelAnimationFrame(animRef.current);
+		const canvas = canvasRef.current;
+		if (!canvas) return;
+
+		const start = () => {
+			cancelAnimationFrame(animRef.current);
+			animRef.current = requestAnimationFrame(draw);
+		};
+		const stop = () => cancelAnimationFrame(animRef.current);
+
+		// Pausa a animação quando o globo não está visível (economia de CPU).
+		const io = new IntersectionObserver(
+			(entries) => {
+				const isVisible = entries.some((e) => e.isIntersecting);
+				visibleRef.current = isVisible;
+				if (isVisible) start();
+				else stop();
+			},
+			{ threshold: 0 }
+		);
+		io.observe(canvas);
+
+		// Pausa também quando a aba está em segundo plano.
+		const onVisibility = () => {
+			if (document.hidden) {
+				stop();
+			} else if (visibleRef.current) {
+				start();
+			}
+		};
+		document.addEventListener("visibilitychange", onVisibility);
+
+		return () => {
+			io.disconnect();
+			document.removeEventListener("visibilitychange", onVisibility);
+			cancelAnimationFrame(animRef.current);
+		};
 	}, [draw]);
 
 	const onPointerDown = useCallback((e) => {

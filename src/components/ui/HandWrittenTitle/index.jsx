@@ -9,6 +9,8 @@ export function HandWrittenTitle({
 	highlight = "",
 	suffix = "",
 	subtitle = "",
+	ctaLabel = "",
+	ctaHref = "",
 }) {
 	const ref = useRef(null);
 
@@ -33,14 +35,14 @@ export function HandWrittenTitle({
 					{highlight}
 					<svg
 						className={styles.circle}
-						viewBox="0 0 300 130"
+						viewBox="0 0 300 120"
 						fill="none"
 						aria-hidden="true"
 					>
 						<motion.path
-							d="M148 16 C 60 12, 16 40, 22 70 C 28 104, 130 120, 214 112 C 286 105, 298 74, 284 50 C 268 24, 180 14, 96 22"
+							d="M150 12 C 72 8, 18 30, 18 60 C 18 92, 92 110, 172 108 C 252 106, 286 80, 280 52 C 274 24, 196 8, 112 16"
 							stroke="currentColor"
-							strokeWidth="7"
+							strokeWidth="6"
 							strokeLinecap="round"
 							strokeLinejoin="round"
 							className={styles.circlePath}
@@ -61,6 +63,35 @@ export function HandWrittenTitle({
 				>
 					{subtitle}
 				</motion.p>
+			)}
+
+			{ctaLabel && (
+				<motion.a
+					className={styles.cta}
+					href={ctaHref}
+					target="_blank"
+					rel="noopener noreferrer"
+					initial={{ opacity: 0, y: 16 }}
+					whileInView={{ opacity: 1, y: 0 }}
+					viewport={{ once: true, amount: 0.6 }}
+					transition={{ delay: 0.55, duration: 0.6 }}
+				>
+					<span>{ctaLabel}</span>
+					<svg
+						viewBox="0 0 24 24"
+						fill="none"
+						xmlns="http://www.w3.org/2000/svg"
+						aria-hidden="true"
+					>
+						<path
+							d="M5 12H19M19 12L12 5M19 12L12 19"
+							stroke="currentColor"
+							strokeWidth="2"
+							strokeLinecap="round"
+							strokeLinejoin="round"
+						/>
+					</svg>
+				</motion.a>
 			)}
 		</div>
 	);

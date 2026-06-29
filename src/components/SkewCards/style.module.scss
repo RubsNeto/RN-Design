@@ -186,3 +186,67 @@
 		animation: none;
 	}
 }
+
+/* ===== Mobile / Tablet: sem hover, o skew vira card limpo e centralizado ===== */
+@media (max-width: 768px) {
+	.section {
+		padding: 80px 16px 90px;
+	}
+
+	.header {
+		margin-bottom: 24px;
+	}
+
+	.cards {
+		flex-direction: column;
+		gap: 0;
+	}
+
+	.card {
+		width: 100%;
+		max-width: 360px;
+		height: auto;
+		min-height: 260px;
+		margin: 16px 0;
+		display: flex;
+	}
+
+	// Painel colorido vira o fundo do card (sem inclinação e sem vazar)
+	.panel,
+	.panelBlur {
+		left: 0;
+		width: 100%;
+		height: 100%;
+		transform: skewX(0deg);
+		border-radius: 18px;
+	}
+
+	.panelBlur {
+		filter: blur(34px);
+		opacity: 0.55;
+		transform: scale(0.96);
+	}
+
+	// Conteúdo ocupa o card inteiro, alinhado e sem os deslocamentos de hover
+	.content {
+		position: relative;
+		left: 0;
+		width: 100%;
+		padding: 30px 26px;
+		display: flex;
+		flex-direction: column;
+		justify-content: flex-end;
+		border-radius: 18px;
+
+		h3 {
+			font-size: 1.4rem;
+		}
+	}
+
+	// Efeitos que dependem de hover não fazem sentido no touch
+	.blobs,
+	.blob1,
+	.blob2 {
+		display: none;
+	}
+}

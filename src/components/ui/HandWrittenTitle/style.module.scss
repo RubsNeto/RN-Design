@@ -27,9 +27,9 @@
 .circle {
 	position: absolute;
 	left: 50%;
-	top: 50%;
-	width: 138%;
-	height: 200%;
+	top: 52%;
+	width: 124%;
+	height: 176%;
 	transform: translate(-50%, -50%);
 	overflow: visible;
 	pointer-events: none;
@@ -45,6 +45,39 @@
 	font-size: clamp(15px, 2vw, 19px);
 	font-weight: 300;
 	color: rgba(233, 245, 255, 0.82);
+}
+
+.cta {
+	display: inline-flex;
+	align-items: center;
+	gap: 12px;
+	margin-top: 36px;
+	padding: 16px 34px;
+	border-radius: 50px;
+	background: linear-gradient(135deg, #4fc3f7, #0288d1);
+	color: #04141d;
+	font-family: var(--font-primary);
+	font-weight: 700;
+	font-size: 15px;
+	letter-spacing: 0.02em;
+	text-decoration: none;
+	box-shadow: 0 14px 34px -12px rgba(79, 195, 247, 0.55);
+	transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+	svg {
+		width: 18px;
+		height: 18px;
+		transition: transform 0.3s ease;
+	}
+
+	&:hover {
+		transform: translateY(-3px);
+		box-shadow: 0 20px 44px -12px rgba(79, 195, 247, 0.7);
+	}
+
+	&:hover svg {
+		transform: translateX(4px);
+	}
 }
 
 @media (max-width: 768px) {

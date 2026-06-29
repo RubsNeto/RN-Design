@@ -11,6 +11,15 @@
     font-display: swap;
 }
 
+/* Gotham Black — wordmark "RN Design" */
+@font-face {
+    font-family: 'Gotham Black';
+    src: url('/fonts/Gotham-Black.otf') format('opentype');
+    font-weight: 400 900;
+    font-style: normal;
+    font-display: swap;
+}
+
 :root {
     /* RN Design Color Palette - Azul Claro */
     --color-primary: #4FC3F7;

@@ -118,11 +118,17 @@
 	}
 
 	.left {
-		padding: 18px 18px 6px;
+		flex: 0 0 auto;
+		padding: 14px 18px 4px;
+	}
+
+	// Em telas pequenas a descrição rouba espaço do 3D — esconde p/ priorizar o robô
+	.desc {
+		display: none;
 	}
 
 	.right {
-		flex: 1;
-		min-height: 180px;
+		flex: 1 1 auto;
+		min-height: 240px;
 	}
 }
