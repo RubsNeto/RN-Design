@@ -32,16 +32,15 @@
 
 .linkText {
 	display: inline-block;
-	font-family: "Gotham Black", sans-serif;
-	font-size: clamp(12px, 1.25vw, 16px);
+	font-family: var(--font-primary);
+	font-size: clamp(13px, 1.4vw, 18px);
 	font-weight: 900;
-	letter-spacing: 0.04em;
+	letter-spacing: -0.01em;
 	line-height: 1;
-	text-transform: uppercase;
 
-	// contorno limpo + preenchimento que sobe no hover
+	// contorno + preenchimento nas cores originais (ciano da marca)
 	color: transparent;
-	-webkit-text-stroke: 1px rgba(255, 255, 255, 0.7);
+	-webkit-text-stroke: 1px rgba(159, 220, 255, 0.55);
 
 	background-image: linear-gradient(180deg, #4fc3f7, #0288d1);
 	background-repeat: no-repeat;
