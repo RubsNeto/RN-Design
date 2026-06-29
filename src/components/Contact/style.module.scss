@@ -11,7 +11,7 @@
 	z-index: 2;
 	max-width: 1400px;
 	margin: 0 auto;
-	padding: 100px 40px 0;
+	padding: 56px 40px 0;
 }
 
 /* ===== Links de redes: pequenos, contornados, preenchem no hover ===== */
@@ -19,8 +19,8 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 22px 38px;
-	padding-bottom: 38px;
+	gap: 18px 36px;
+	padding-bottom: 28px;
 	border-bottom: 1px solid rgba(159, 220, 255, 0.14);
 }
 
@@ -32,42 +32,36 @@
 }
 
 .linkText {
-	position: relative;
 	display: inline-block;
-	font-family: var(--font-primary);
-	font-size: clamp(20px, 2.3vw, 30px);
-	font-weight: 800;
-	letter-spacing: -0.01em;
+	font-family: var(--font-display);
+	font-size: clamp(18px, 2vw, 28px);
+	font-weight: 700;
+	letter-spacing: 0.01em;
 	line-height: 1;
 
-	// contorno limpo
+	// contorno limpo + preenchimento que sobe no hover
 	color: transparent;
-	-webkit-text-stroke: 1px rgba(255, 255, 255, 0.78);
+	-webkit-text-stroke: 1px rgba(255, 255, 255, 0.72);
+
+	background-image: linear-gradient(180deg, #4fc3f7, #0288d1);
+	background-repeat: no-repeat;
+	background-size: 100% 0%;
+	background-position: 0 100%;
+	-webkit-background-clip: text;
+	background-clip: text;
+
+	transition: background-size 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+		-webkit-text-stroke-color 0.5s ease;
 }
 
-// camada sólida que preenche da esquerda p/ direita no hover
-.linkText::before {
-	content: attr(data-text);
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 0;
-	height: 100%;
-	overflow: hidden;
-	white-space: nowrap;
-	color: #4fc3f7;
-	-webkit-text-fill-color: #4fc3f7;
-	-webkit-text-stroke: 0;
-	transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.link:hover .linkText::before {
-	width: 100%;
+.link:hover .linkText {
+	background-size: 100% 100%;
+	-webkit-text-stroke-color: transparent;
 }
 
 .arrow {
-	width: 16px;
-	height: 16px;
+	width: 15px;
+	height: 15px;
 	flex-shrink: 0;
 	color: rgba(255, 255, 255, 0.5);
 	opacity: 0;
@@ -87,9 +81,9 @@
 	display: flex;
 	justify-content: space-between;
 	flex-wrap: wrap;
-	gap: 30px;
-	margin-top: 50px;
-	padding-bottom: 50px;
+	gap: 26px;
+	margin-top: 28px;
+	padding-bottom: 24px;
 
 	> div {
 		display: flex;
@@ -170,8 +164,9 @@
 
 /* Touch: sem hover -> links já preenchidos e seta visível */
 @media (hover: none) {
-	.linkText::before {
-		width: 100%;
+	.linkText {
+		background-size: 100% 100%;
+		-webkit-text-stroke-color: transparent;
 	}
 
 	.arrow {
@@ -183,33 +178,33 @@
 
 @media (max-width: 768px) {
 	.body {
-		padding: 70px 20px 0;
+		padding: 44px 20px 0;
 	}
 
 	.links {
-		gap: 18px 28px;
-		padding-bottom: 30px;
+		gap: 16px 26px;
+		padding-bottom: 24px;
 	}
 
 	.info {
 		flex-direction: column;
-		gap: 32px;
-		margin-top: 40px;
+		gap: 26px;
+		margin-top: 24px;
 
 		> div {
 			flex-wrap: wrap;
-			gap: 28px;
+			gap: 24px;
 		}
 	}
 
 	.wordmark {
-		margin-top: 10px;
+		margin-top: 8px;
 		font-size: clamp(48px, 17vw, 130px);
 	}
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.linkText::before,
+	.linkText,
 	.arrow {
 		transition: none;
 	}

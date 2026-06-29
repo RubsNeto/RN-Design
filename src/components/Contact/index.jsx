@@ -72,9 +72,7 @@ export default function Index() {
 							whileInView="visible"
 							viewport={{ once: true, amount: 0.4 }}
 						>
-							<span className={styles.linkText} data-text={s.label}>
-								{s.label}
-							</span>
+							<span className={styles.linkText}>{s.label}</span>
 							<Arrow />
 						</motion.a>
 					))}
