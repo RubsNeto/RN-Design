@@ -10,12 +10,13 @@
 	contain: layout style paint;
 }
 
-/* CTA centralizado no meio da tela */
+/* CTA centralizado no meio da tela (levemente acima do centro) */
 .cta {
 	position: relative;
 	z-index: 2;
 	width: 100%;
 	padding: 0 24px;
+	transform: translateY(-6vh);
 }
 
 /* Rodapé estático ancorado embaixo */
