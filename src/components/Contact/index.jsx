@@ -20,11 +20,11 @@ const social = [
 ];
 
 const reveal = {
-	hidden: { opacity: 0, y: 42 },
+	hidden: { opacity: 0, y: 26 },
 	visible: (i = 0) => ({
 		opacity: 1,
 		y: 0,
-		transition: { duration: 0.7, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] },
+		transition: { duration: 0.6, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] },
 	}),
 };
 
@@ -57,27 +57,7 @@ export default function Index() {
 	return (
 		<motion.div style={{ y }} ref={container} className={styles.contact}>
 			<div className={styles.body}>
-				<motion.span
-					className={styles.label}
-					variants={reveal}
-					initial="hidden"
-					whileInView="visible"
-					viewport={{ once: true, amount: 0.6 }}
-				>
-					vamos trabalhar juntos
-				</motion.span>
-
-				<motion.h2
-					className={styles.heading}
-					variants={reveal}
-					initial="hidden"
-					whileInView="visible"
-					viewport={{ once: true, amount: 0.6 }}
-				>
-					Vamos criar algo <span className={styles.accent}>excepcional</span>
-				</motion.h2>
-
-				{/* Efeito 1: links contornados que preenchem no hover + seta */}
+				{/* Links de redes — pequenos, contornados, preenchem no hover */}
 				<nav className={styles.links}>
 					{social.map((s, i) => (
 						<motion.a
@@ -86,13 +66,15 @@ export default function Index() {
 							target="_blank"
 							rel="noopener noreferrer"
 							className={styles.link}
-							custom={i + 1}
+							custom={i}
 							variants={reveal}
 							initial="hidden"
 							whileInView="visible"
-							viewport={{ once: true, amount: 0.3 }}
+							viewport={{ once: true, amount: 0.4 }}
 						>
-							<span className={styles.linkText}>{s.label}</span>
+							<span className={styles.linkText} data-text={s.label}>
+								{s.label}
+							</span>
 							<Arrow />
 						</motion.a>
 					))}
@@ -124,7 +106,7 @@ export default function Index() {
 				</div>
 			</div>
 
-			{/* Efeito 2: wordmark gigante com fade-out */}
+			{/* Wordmark gigante com fade-out */}
 			<motion.div
 				className={styles.wordmark}
 				aria-hidden="true"
