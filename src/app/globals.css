@@ -56,7 +56,7 @@ body {
     overflow-x: hidden;
     overflow-y: auto;
     cursor: wait;
-    background: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%);
+    background: #05080F;
     font-family: var(--font-primary);
 }
 
@@ -216,6 +216,7 @@ h6 {
 /* GPU Acceleration & Smooth Rendering */
 html {
     scroll-behavior: auto;
+    background: #05080F;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
