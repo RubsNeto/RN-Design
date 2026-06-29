@@ -19,22 +19,23 @@
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
-	gap: 16px 32px;
+	justify-content: center;
+	gap: 13px 28px;
 }
 
 .link {
 	display: inline-flex;
 	align-items: center;
-	gap: 7px;
+	gap: 6px;
 	text-decoration: none;
 }
 
 .linkText {
 	display: inline-block;
 	font-family: "Gotham Black", sans-serif;
-	font-size: clamp(15px, 1.6vw, 22px);
+	font-size: clamp(12px, 1.25vw, 16px);
 	font-weight: 900;
-	letter-spacing: 0.02em;
+	letter-spacing: 0.04em;
 	line-height: 1;
 	text-transform: uppercase;
 
@@ -87,8 +88,9 @@
 	font-family: var(--font-primary);
 	font-weight: 900;
 	letter-spacing: -0.04em;
-	line-height: 0.8;
-	font-size: clamp(56px, 15vw, 250px);
+	line-height: 1;
+	padding-top: 0.08em;
+	font-size: clamp(46px, 12vw, 200px);
 	white-space: nowrap;
 	user-select: none;
 	pointer-events: none;
@@ -98,8 +100,8 @@
 	background-clip: text;
 	-webkit-text-fill-color: transparent;
 
-	-webkit-mask-image: linear-gradient(180deg, #000 0%, #000 36%, transparent 88%);
-	mask-image: linear-gradient(180deg, #000 0%, #000 36%, transparent 88%);
+	-webkit-mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 90%);
+	mask-image: linear-gradient(180deg, #000 0%, #000 40%, transparent 90%);
 }
 
 // "2026 © RN Design" sobreposto à base do wordmark (na zona do fade-out)
@@ -142,7 +144,7 @@
 	}
 
 	.wordmark {
-		font-size: clamp(46px, 17vw, 130px);
+		font-size: clamp(40px, 14vw, 110px);
 	}
 
 	.copyright {

@@ -83,7 +83,7 @@ export default function Home() {
           <Projects />
         </div>
         <SlidingImages />
-        <section style={{ minHeight: '72vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '40px 0', background: 'linear-gradient(180deg, #0a0a0a 0%, #0f1419 50%, #0a0a0a 100%)' }}>
+        <section style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', background: 'linear-gradient(180deg, #0a0a0a 0%, #0f1419 50%, #0a0a0a 100%)' }}>
           <HandWrittenTitle
             prefix="Vamos criar algo"
             highlight="excepcional"
