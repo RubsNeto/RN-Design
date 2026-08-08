@@ -22,6 +22,17 @@ export default function Index() {
         setIsActive(false);
     }, [pathname])
 
+    // Fora da home (ex.: páginas legais) as seções não existem no DOM,
+    // então o clique precisa levar para a âncora correspondente na home.
+    const goToSection = (id) => {
+        const section = document.getElementById(id);
+        if (section) {
+            section.scrollIntoView({ behavior: 'auto' });
+        } else {
+            window.location.href = `/#${id}`;
+        }
+    }
+
     useLayoutEffect(() => {
         gsap.registerPlugin(ScrollTrigger)
         gsap.to(button.current, {
@@ -56,25 +67,25 @@ export default function Index() {
                 </div>
                 <div className={styles.nav}>
                     <Magnetic>
-                        <div className={styles.el} onClick={() => document.getElementById('about')?.scrollIntoView({ behavior: 'auto' })}>
+                        <div className={styles.el} onClick={() => goToSection('about')}>
                             <a>Sobre Nós</a>
                             <div className={styles.indicator}></div>
                         </div>
                     </Magnetic>
                     <Magnetic>
-                        <div className={styles.el} onClick={() => document.getElementById('services')?.scrollIntoView({ behavior: 'auto' })}>
+                        <div className={styles.el} onClick={() => goToSection('services')}>
                             <a>O que fazemos</a>
                             <div className={styles.indicator}></div>
                         </div>
                     </Magnetic>
                     <Magnetic>
-                        <div className={styles.el} onClick={() => document.getElementById('work')?.scrollIntoView({ behavior: 'auto' })}>
+                        <div className={styles.el} onClick={() => goToSection('work')}>
                             <a>Projetos</a>
                             <div className={styles.indicator}></div>
                         </div>
                     </Magnetic>
                     <Magnetic>
-                        <div className={styles.el} onClick={() => document.getElementById('contact')?.scrollIntoView({ behavior: 'auto' })}>
+                        <div className={styles.el} onClick={() => goToSection('contact')}>
                             <a>Contato</a>
                             <div className={styles.indicator}></div>
                         </div>
