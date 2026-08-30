@@ -1,5 +1,6 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  transpilePackages: ['@rn-design/system'],
   images: {
     // Serve AVIF/WebP automaticamente para as imagens via next/image.
     formats: ['image/avif', 'image/webp'],

@@ -11,22 +11,22 @@ const projects = [
   {
     title: "Subsolo",
     src: "Subsolo.png",
-    color: "#1a1a2e"
+    color: "var(--rn-color-scene-deep)"
   },
   {
     title: "Amanda Castro Estética",
     src: "Amanda.png",
-    color: "#f5e6d3"
+    color: "var(--rn-color-surface-soft)"
   },
   {
     title: "Pandia",
     src: "Pandia.png",
-    color: "#36d1dc"
+    color: "var(--rn-color-accent)"
   },
   {
     title: "Palmiex",
     src: "Palmiex.png",
-    color: "#5b86e5"
+    color: "var(--rn-blue-soft)"
   }
 ]
 
@@ -52,15 +52,27 @@ export default function Home() {
   let yMoveCursorLabel = useRef(null);
 
   useEffect(() => {
+    const modalElement = modalContainer.current;
+    const cursorElement = cursor.current;
+    const cursorLabelElement = cursorLabel.current;
+
     //Move Container
-    xMoveContainer.current = gsap.quickTo(modalContainer.current, "left", { duration: 0.8, ease: "power3" })
-    yMoveContainer.current = gsap.quickTo(modalContainer.current, "top", { duration: 0.8, ease: "power3" })
+    xMoveContainer.current = gsap.quickTo(modalElement, "left", { duration: 0.8, ease: "power3" })
+    yMoveContainer.current = gsap.quickTo(modalElement, "top", { duration: 0.8, ease: "power3" })
     //Move cursor
-    xMoveCursor.current = gsap.quickTo(cursor.current, "left", { duration: 0.5, ease: "power3" })
-    yMoveCursor.current = gsap.quickTo(cursor.current, "top", { duration: 0.5, ease: "power3" })
+    xMoveCursor.current = gsap.quickTo(cursorElement, "left", { duration: 0.5, ease: "power3" })
+    yMoveCursor.current = gsap.quickTo(cursorElement, "top", { duration: 0.5, ease: "power3" })
     //Move cursor label
-    xMoveCursorLabel.current = gsap.quickTo(cursorLabel.current, "left", { duration: 0.45, ease: "power3" })
-    yMoveCursorLabel.current = gsap.quickTo(cursorLabel.current, "top", { duration: 0.45, ease: "power3" })
+    xMoveCursorLabel.current = gsap.quickTo(cursorLabelElement, "left", { duration: 0.45, ease: "power3" })
+    yMoveCursorLabel.current = gsap.quickTo(cursorLabelElement, "top", { duration: 0.45, ease: "power3" })
+
+    return () => {
+      gsap.killTweensOf([
+        modalElement,
+        cursorElement,
+        cursorLabelElement,
+      ])
+    }
   }, [])
 
   const moveItems = (x, y) => {
@@ -77,7 +89,22 @@ export default function Home() {
   }
 
   return (
-    <main onMouseMove={(e) => { moveItems(e.clientX, e.clientY) }} className={styles.projects}>
+    <section
+      onMouseMove={(e) => {
+        if (active) moveItems(e.clientX, e.clientY)
+      }}
+      className={`${styles.projects} rn-brand-canvas rn-brand-canvas--editorial`}
+      aria-labelledby="projects-title"
+    >
+      <header className={styles.header}>
+        <p className="rn-eyebrow">Projetos RN Design</p>
+        <h2 id="projects-title" className="rn-story-heading">
+          Soluções que <span>saíram do papel.</span>
+        </h2>
+        <p className={styles.subtitle}>
+          Produtos reais construídos para operações reais.
+        </p>
+      </header>
       <div className={styles.body}>
         {
           projects.map((project, index) => {
@@ -90,7 +117,7 @@ export default function Home() {
       </Rounded>
       <>
         <motion.div ref={modalContainer} variants={scaleAnimation} initial="initial" animate={active ? "enter" : "closed"} className={styles.modalContainer}>
-          <div style={{ top: index * -100 + "%" }} className={styles.modalSlider}>
+          <div style={{ transform: `translateY(${-index * 100}%)` }} className={styles.modalSlider}>
             {
               projects.map((project, index) => {
                 const { src, color } = project
@@ -99,7 +126,7 @@ export default function Home() {
                     src={`/images/${src}`}
                     width={300}
                     height={0}
-                    alt="image"
+                    alt={`Interface do projeto ${project.title}`}
                   />
                 </div>
               })
@@ -109,6 +136,6 @@ export default function Home() {
         <motion.div ref={cursor} className={styles.cursor} variants={scaleAnimation} initial="initial" animate={active ? "enter" : "closed"}></motion.div>
         <motion.div ref={cursorLabel} className={styles.cursorLabel} variants={scaleAnimation} initial="initial" animate={active ? "enter" : "closed"}>Ver</motion.div>
       </>
-    </main>
+    </section>
   )
 }

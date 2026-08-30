@@ -1,7 +1,9 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { useRef, useEffect, useCallback } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
+
+const TARGET_FRAME_INTERVAL = 1000 / 30;
 
 const DEFAULT_MARKERS = [
 	{ lat: 37.78, lng: -122.42, label: "San Francisco" },
@@ -66,6 +68,8 @@ export function Globe({
 	rotationRef = null,
 }) {
 	const canvasRef = useRef(null);
+	const contextRef = useRef(null);
+	const metricsRef = useRef({ width: 0, height: 0, dpr: 1, glow: null });
 	const rotYRef = useRef(0.4);
 	const rotXRef = useRef(0.3);
 	const dragRef = useRef({
@@ -76,213 +80,330 @@ export function Globe({
 		startRotX: 0,
 	});
 	const animRef = useRef(0);
+	const frameTimerRef = useRef(0);
+	const lastFrameRef = useRef(0);
 	const timeRef = useRef(0);
 	const dotsRef = useRef([]);
-	const visibleRef = useRef(true);
+	const dotBucketsRef = useRef(Array.from({ length: 11 }, () => []));
+	const visibleRef = useRef(false);
+	const reducedMotionRef = useRef(false);
+
+	const dotPalette = useMemo(
+		() => Array.from({ length: 11 }, (_, index) => (
+			dotColor.replace("ALPHA", (index / 10).toFixed(2))
+		)),
+		[dotColor],
+	);
+	const connectionPoints = useMemo(
+		() => connections.map((connection) => ({
+			from: latLngToXYZ(connection.from[0], connection.from[1], 1),
+			to: latLngToXYZ(connection.to[0], connection.to[1], 1),
+			phase: connection.from[0] * 0.1,
+		})),
+		[connections],
+	);
+	const markerPoints = useMemo(
+		() => markers.map((marker) => ({
+			...marker,
+			point: latLngToXYZ(marker.lat, marker.lng, 1),
+		})),
+		[markers],
+	);
 
 	useEffect(() => {
+		const compact = window.matchMedia("(max-width: 768px)").matches;
+		const lowPower = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+		const numDots = compact || lowPower ? 640 : 900;
 		const dots = [];
-		const numDots = 1200;
 		const goldenRatio = (1 + Math.sqrt(5)) / 2;
-		for (let i = 0; i < numDots; i++) {
-			const theta = (2 * Math.PI * i) / goldenRatio;
-			const phi = Math.acos(1 - (2 * (i + 0.5)) / numDots);
-			const x = Math.cos(theta) * Math.sin(phi);
-			const y = Math.cos(phi);
-			const z = Math.sin(theta) * Math.sin(phi);
-			dots.push([x, y, z]);
+
+		for (let index = 0; index < numDots; index += 1) {
+			const theta = (2 * Math.PI * index) / goldenRatio;
+			const phi = Math.acos(1 - (2 * (index + 0.5)) / numDots);
+			dots.push([
+				Math.cos(theta) * Math.sin(phi),
+				Math.cos(phi),
+				Math.sin(theta) * Math.sin(phi),
+			]);
 		}
+
 		dotsRef.current = dots;
+		reducedMotionRef.current = window.matchMedia(
+			"(prefers-reduced-motion: reduce)",
+		).matches;
 	}, []);
 
-	const draw = useCallback(() => {
+	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
-		const ctx = canvas.getContext("2d");
-		if (!ctx) return;
+		if (!canvas) return undefined;
 
-		const dpr = window.devicePixelRatio || 1;
-		const w = canvas.clientWidth;
-		const h = canvas.clientHeight;
-		if (w === 0 || h === 0) {
-			animRef.current = requestAnimationFrame(draw);
+		const context = canvas.getContext("2d", { alpha: true, desynchronized: true });
+		if (!context) return undefined;
+		contextRef.current = context;
+
+		const resize = () => {
+			const rect = canvas.getBoundingClientRect();
+			const width = Math.max(1, Math.round(rect.width));
+			const height = Math.max(1, Math.round(rect.height));
+			const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+			const previous = metricsRef.current;
+
+			if (
+				previous.width === width
+				&& previous.height === height
+				&& previous.dpr === dpr
+			) return;
+
+			canvas.width = Math.round(width * dpr);
+			canvas.height = Math.round(height * dpr);
+			context.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+			const cx = width / 2;
+			const cy = height / 2;
+			const radius = Math.min(width, height) * 0.38;
+			const glow = context.createRadialGradient(
+				cx,
+				cy,
+				radius * 0.8,
+				cx,
+				cy,
+				radius * 1.5,
+			);
+			glow.addColorStop(0, "rgba(60, 140, 255, 0.04)");
+			glow.addColorStop(1, "rgba(60, 140, 255, 0)");
+			metricsRef.current = { width, height, dpr, glow };
+		};
+
+		resize();
+		if (typeof ResizeObserver === "undefined") {
+			window.addEventListener("resize", resize, { passive: true });
+			return () => window.removeEventListener("resize", resize);
+		}
+
+		const resizeObserver = new ResizeObserver(resize);
+		resizeObserver.observe(canvas);
+		return () => resizeObserver.disconnect();
+	}, []);
+
+	const draw = useCallback((timestamp = 0) => {
+		if (!visibleRef.current) return;
+
+		const previousFrame = lastFrameRef.current;
+		const elapsed = previousFrame ? timestamp - previousFrame : TARGET_FRAME_INTERVAL;
+		lastFrameRef.current = timestamp;
+		const scheduleNextFrame = () => {
+			window.clearTimeout(frameTimerRef.current);
+			frameTimerRef.current = window.setTimeout(() => {
+				animRef.current = window.requestAnimationFrame(draw);
+			}, TARGET_FRAME_INTERVAL * 0.66);
+		};
+
+		const context = contextRef.current;
+		const { width, height, glow } = metricsRef.current;
+		if (!context || !width || !height || !glow) {
+			scheduleNextFrame();
 			return;
 		}
-		canvas.width = w * dpr;
-		canvas.height = h * dpr;
-		ctx.scale(dpr, dpr);
 
-		const cx = w / 2;
-		const cy = h / 2;
-		const radius = Math.min(w, h) * 0.38;
+		const frameScale = Math.min(elapsed / (1000 / 60), 3);
+		const cx = width / 2;
+		const cy = height / 2;
+		const radius = Math.min(width, height) * 0.38;
 		const fov = 600;
 
 		if (!dragRef.current.active) {
 			if (rotationRef && rotationRef.current != null) {
 				rotYRef.current = rotationRef.current;
 			} else {
-				rotYRef.current += autoRotateSpeed;
+				rotYRef.current += autoRotateSpeed * frameScale;
 			}
 		}
 
-		timeRef.current += 0.015;
+		timeRef.current += 0.015 * frameScale;
 		const time = timeRef.current;
+		context.clearRect(0, 0, width, height);
+		context.fillStyle = glow;
+		context.fillRect(0, 0, width, height);
 
-		ctx.clearRect(0, 0, w, h);
+		context.beginPath();
+		context.arc(cx, cy, radius, 0, Math.PI * 2);
+		context.strokeStyle = "rgba(100, 180, 255, 0.06)";
+		context.lineWidth = 1;
+		context.stroke();
 
-		const glowGrad = ctx.createRadialGradient(cx, cy, radius * 0.8, cx, cy, radius * 1.5);
-		glowGrad.addColorStop(0, "rgba(60, 140, 255, 0.04)");
-		glowGrad.addColorStop(1, "rgba(60, 140, 255, 0)");
-		ctx.fillStyle = glowGrad;
-		ctx.fillRect(0, 0, w, h);
+		const rotationY = rotYRef.current;
+		const rotationX = rotXRef.current;
+		const buckets = dotBucketsRef.current;
+		buckets.forEach((bucket) => { bucket.length = 0; });
 
-		ctx.beginPath();
-		ctx.arc(cx, cy, radius, 0, Math.PI * 2);
-		ctx.strokeStyle = "rgba(100, 180, 255, 0.06)";
-		ctx.lineWidth = 1;
-		ctx.stroke();
-
-		const ry = rotYRef.current;
-		const rx = rotXRef.current;
-
-		const dots = dotsRef.current;
-		for (let i = 0; i < dots.length; i++) {
-			let [x, y, z] = dots[i];
+		for (const dot of dotsRef.current) {
+			let [x, y, z] = dot;
 			x *= radius;
 			y *= radius;
 			z *= radius;
-			[x, y, z] = rotateX(x, y, z, rx);
-			[x, y, z] = rotateY(x, y, z, ry);
+			[x, y, z] = rotateX(x, y, z, rotationX);
+			[x, y, z] = rotateY(x, y, z, rotationY);
 			if (z > 0) continue;
-			const [sx, sy] = project(x, y, z, cx, cy, fov);
+
+			const [screenX, screenY] = project(x, y, z, cx, cy, fov);
 			const depthAlpha = Math.max(0.1, 1 - (z + radius) / (2 * radius));
-			const dotSize = 1 + depthAlpha * 0.8;
-			ctx.beginPath();
-			ctx.arc(sx, sy, dotSize, 0, Math.PI * 2);
-			ctx.fillStyle = dotColor.replace("ALPHA", depthAlpha.toFixed(2));
-			ctx.fill();
+			const paletteIndex = Math.max(0, Math.min(10, Math.round(depthAlpha * 10)));
+			buckets[paletteIndex].push(screenX, screenY, 1 + depthAlpha * 0.8);
 		}
 
-		for (const conn of connections) {
-			const [lat1, lng1] = conn.from;
-			const [lat2, lng2] = conn.to;
-			let [x1, y1, z1] = latLngToXYZ(lat1, lng1, radius);
-			let [x2, y2, z2] = latLngToXYZ(lat2, lng2, radius);
-			[x1, y1, z1] = rotateX(x1, y1, z1, rx);
-			[x1, y1, z1] = rotateY(x1, y1, z1, ry);
-			[x2, y2, z2] = rotateX(x2, y2, z2, rx);
-			[x2, y2, z2] = rotateY(x2, y2, z2, ry);
+		buckets.forEach((bucket, paletteIndex) => {
+			if (!bucket.length) return;
+			context.beginPath();
+			for (let index = 0; index < bucket.length; index += 3) {
+				const x = bucket[index];
+				const y = bucket[index + 1];
+				const size = bucket[index + 2];
+				context.moveTo(x + size, y);
+				context.arc(x, y, size, 0, Math.PI * 2);
+			}
+			context.fillStyle = dotPalette[paletteIndex];
+			context.fill();
+		});
+
+		for (const connection of connectionPoints) {
+			let [x1, y1, z1] = connection.from.map((value) => value * radius);
+			let [x2, y2, z2] = connection.to.map((value) => value * radius);
+			[x1, y1, z1] = rotateX(x1, y1, z1, rotationX);
+			[x1, y1, z1] = rotateY(x1, y1, z1, rotationY);
+			[x2, y2, z2] = rotateX(x2, y2, z2, rotationX);
+			[x2, y2, z2] = rotateY(x2, y2, z2, rotationY);
 			if (z1 > radius * 0.3 && z2 > radius * 0.3) continue;
-			const [sx1, sy1] = project(x1, y1, z1, cx, cy, fov);
-			const [sx2, sy2] = project(x2, y2, z2, cx, cy, fov);
-			const midX = (x1 + x2) / 2;
-			const midY = (y1 + y2) / 2;
-			const midZ = (z1 + z2) / 2;
-			const midLen = Math.sqrt(midX * midX + midY * midY + midZ * midZ);
+
+			const [screenX1, screenY1] = project(x1, y1, z1, cx, cy, fov);
+			const [screenX2, screenY2] = project(x2, y2, z2, cx, cy, fov);
+			const middleX = (x1 + x2) / 2;
+			const middleY = (y1 + y2) / 2;
+			const middleZ = (z1 + z2) / 2;
+			const middleLength = Math.sqrt(
+				middleX * middleX + middleY * middleY + middleZ * middleZ,
+			);
 			const arcHeight = radius * 1.25;
-			const elevX = (midX / midLen) * arcHeight;
-			const elevY = (midY / midLen) * arcHeight;
-			const elevZ = (midZ / midLen) * arcHeight;
-			const [scx, scy] = project(elevX, elevY, elevZ, cx, cy, fov);
-			ctx.beginPath();
-			ctx.moveTo(sx1, sy1);
-			ctx.quadraticCurveTo(scx, scy, sx2, sy2);
-			ctx.strokeStyle = arcColor;
-			ctx.lineWidth = 1.2;
-			ctx.stroke();
-			const t = (Math.sin(time * 1.2 + lat1 * 0.1) + 1) / 2;
-			const tx = (1 - t) * (1 - t) * sx1 + 2 * (1 - t) * t * scx + t * t * sx2;
-			const ty = (1 - t) * (1 - t) * sy1 + 2 * (1 - t) * t * scy + t * t * sy2;
-			ctx.beginPath();
-			ctx.arc(tx, ty, 2, 0, Math.PI * 2);
-			ctx.fillStyle = markerColor;
-			ctx.fill();
+			const [controlX, controlY] = project(
+				(middleX / middleLength) * arcHeight,
+				(middleY / middleLength) * arcHeight,
+				(middleZ / middleLength) * arcHeight,
+				cx,
+				cy,
+				fov,
+			);
+
+			context.beginPath();
+			context.moveTo(screenX1, screenY1);
+			context.quadraticCurveTo(controlX, controlY, screenX2, screenY2);
+			context.strokeStyle = arcColor;
+			context.lineWidth = 1.2;
+			context.stroke();
+
+			const progress = (Math.sin(time * 1.2 + connection.phase) + 1) / 2;
+			const pointX = (1 - progress) ** 2 * screenX1
+				+ 2 * (1 - progress) * progress * controlX
+				+ progress ** 2 * screenX2;
+			const pointY = (1 - progress) ** 2 * screenY1
+				+ 2 * (1 - progress) * progress * controlY
+				+ progress ** 2 * screenY2;
+			context.beginPath();
+			context.arc(pointX, pointY, 2, 0, Math.PI * 2);
+			context.fillStyle = markerColor;
+			context.fill();
 		}
 
-		for (const marker of markers) {
-			let [x, y, z] = latLngToXYZ(marker.lat, marker.lng, radius);
-			[x, y, z] = rotateX(x, y, z, rx);
-			[x, y, z] = rotateY(x, y, z, ry);
+		context.font = "10px system-ui, sans-serif";
+		for (const marker of markerPoints) {
+			let [x, y, z] = marker.point.map((value) => value * radius);
+			[x, y, z] = rotateX(x, y, z, rotationX);
+			[x, y, z] = rotateY(x, y, z, rotationY);
 			if (z > radius * 0.1) continue;
-			const [sx, sy] = project(x, y, z, cx, cy, fov);
+
+			const [screenX, screenY] = project(x, y, z, cx, cy, fov);
 			const pulse = Math.sin(time * 2 + marker.lat) * 0.5 + 0.5;
-			ctx.beginPath();
-			ctx.arc(sx, sy, 4 + pulse * 4, 0, Math.PI * 2);
-			ctx.strokeStyle = markerColor.replace("1)", `${(0.2 + pulse * 0.15).toFixed(2)})`);
-			ctx.lineWidth = 1;
-			ctx.stroke();
-			ctx.beginPath();
-			ctx.arc(sx, sy, 2.5, 0, Math.PI * 2);
-			ctx.fillStyle = markerColor;
-			ctx.fill();
+			context.beginPath();
+			context.arc(screenX, screenY, 4 + pulse * 4, 0, Math.PI * 2);
+			context.strokeStyle = markerColor.replace(
+				"1)",
+				`${(0.2 + pulse * 0.15).toFixed(2)})`,
+			);
+			context.lineWidth = 1;
+			context.stroke();
+			context.beginPath();
+			context.arc(screenX, screenY, 2.5, 0, Math.PI * 2);
+			context.fillStyle = markerColor;
+			context.fill();
+
 			if (marker.label) {
-				ctx.font = "10px system-ui, sans-serif";
-				ctx.fillStyle = markerColor.replace("1)", "0.6)");
-				ctx.fillText(marker.label, sx + 8, sy + 3);
+				context.fillStyle = markerColor.replace("1)", "0.6)");
+				context.fillText(marker.label, screenX + 8, screenY + 3);
 			}
 		}
 
-		if (visibleRef.current) {
-			animRef.current = requestAnimationFrame(draw);
+		if (visibleRef.current && !reducedMotionRef.current) {
+			scheduleNextFrame();
 		}
-	}, [dotColor, arcColor, markerColor, autoRotateSpeed, connections, markers, rotationRef]);
+	}, [arcColor, autoRotateSpeed, connectionPoints, dotPalette, markerColor, markerPoints, rotationRef]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
-		if (!canvas) return;
+		if (!canvas) return undefined;
 
 		const start = () => {
-			cancelAnimationFrame(animRef.current);
-			animRef.current = requestAnimationFrame(draw);
+			window.cancelAnimationFrame(animRef.current);
+			window.clearTimeout(frameTimerRef.current);
+			lastFrameRef.current = 0;
+			animRef.current = window.requestAnimationFrame(draw);
 		};
-		const stop = () => cancelAnimationFrame(animRef.current);
-
-		// Pausa a animação quando o globo não está visível (economia de CPU).
-		const io = new IntersectionObserver(
-			(entries) => {
-				const isVisible = entries.some((e) => e.isIntersecting);
-				visibleRef.current = isVisible;
-				if (isVisible) start();
+		const stop = () => {
+			window.cancelAnimationFrame(animRef.current);
+			window.clearTimeout(frameTimerRef.current);
+		};
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				const nextVisible = entry.isIntersecting && entry.intersectionRatio > 0;
+				visibleRef.current = nextVisible;
+				if (nextVisible && !document.hidden) start();
 				else stop();
 			},
-			{ threshold: 0 }
+			{ threshold: 0.01 },
 		);
-		io.observe(canvas);
 
-		// Pausa também quando a aba está em segundo plano.
-		const onVisibility = () => {
-			if (document.hidden) {
-				stop();
-			} else if (visibleRef.current) {
-				start();
-			}
+		observer.observe(canvas);
+		const handleVisibility = () => {
+			if (document.hidden) stop();
+			else if (visibleRef.current) start();
 		};
-		document.addEventListener("visibilitychange", onVisibility);
+		document.addEventListener("visibilitychange", handleVisibility);
 
 		return () => {
-			io.disconnect();
-			document.removeEventListener("visibilitychange", onVisibility);
-			cancelAnimationFrame(animRef.current);
+			observer.disconnect();
+			document.removeEventListener("visibilitychange", handleVisibility);
+			window.cancelAnimationFrame(animRef.current);
+			window.clearTimeout(frameTimerRef.current);
 		};
 	}, [draw]);
 
-	const onPointerDown = useCallback((e) => {
+	const onPointerDown = useCallback((event) => {
 		dragRef.current = {
 			active: true,
-			startX: e.clientX,
-			startY: e.clientY,
+			startX: event.clientX,
+			startY: event.clientY,
 			startRotY: rotYRef.current,
 			startRotX: rotXRef.current,
 		};
-		e.target.setPointerCapture(e.pointerId);
+		event.currentTarget.setPointerCapture(event.pointerId);
 	}, []);
 
-	const onPointerMove = useCallback((e) => {
+	const onPointerMove = useCallback((event) => {
 		if (!dragRef.current.active) return;
-		const dx = e.clientX - dragRef.current.startX;
-		const dy = e.clientY - dragRef.current.startY;
-		rotYRef.current = dragRef.current.startRotY + dx * 0.005;
-		rotXRef.current = Math.max(-1, Math.min(1, dragRef.current.startRotX + dy * 0.005));
+		const deltaX = event.clientX - dragRef.current.startX;
+		const deltaY = event.clientY - dragRef.current.startY;
+		rotYRef.current = dragRef.current.startRotY + deltaX * 0.005;
+		rotXRef.current = Math.max(
+			-1,
+			Math.min(1, dragRef.current.startRotX + deltaY * 0.005),
+		);
 	}, []);
 
 	const onPointerUp = useCallback(() => {
@@ -294,9 +415,12 @@ export function Globe({
 			ref={canvasRef}
 			className={cn(className)}
 			style={{ width: "100%", height: "100%", cursor: "grab", touchAction: "none" }}
+			role="img"
+			aria-label="Globo interativo com conexões internacionais"
 			onPointerDown={onPointerDown}
 			onPointerMove={onPointerMove}
 			onPointerUp={onPointerUp}
+			onPointerCancel={onPointerUp}
 		/>
 	);
 }

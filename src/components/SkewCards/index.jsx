@@ -6,20 +6,20 @@ const cards = [
 	{
 		title: "Do conceito ao código",
 		desc: "Design e engenharia pensados juntos — do primeiro rascunho ao deploy.",
-		from: "#4FC3F7",
-		to: "#0288D1",
+		from: "var(--rn-color-primary)",
+		to: "var(--rn-color-link-hover)",
 	},
 	{
 		title: "Obsessão por detalhe",
 		desc: "Microinterações, performance e acessibilidade como parte do design, não como extra.",
-		from: "#00BCD4",
-		to: "#0277BD",
+		from: "var(--rn-cyan)",
+		to: "var(--rn-color-link-hover)",
 	},
 	{
 		title: "Tecnologia com propósito",
 		desc: "IA e automação aplicadas onde geram valor real, nunca como enfeite.",
-		from: "#29B6F6",
-		to: "#00E5FF",
+		from: "var(--rn-blue-soft)",
+		to: "var(--rn-color-accent)",
 	},
 ];
 

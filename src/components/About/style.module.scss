@@ -14,14 +14,12 @@
         height: 100%;
         pointer-events: none;
         overflow: hidden;
-        will-change: transform;
 
         .orb1,
         .orb2,
         .orb3 {
             position: absolute;
             border-radius: 50%;
-            will-change: transform;
         }
 
         .orb1 {
@@ -106,7 +104,6 @@
 
         .word {
             display: inline-block;
-            will-change: transform, opacity;
         }
 
         .highlight {
@@ -160,7 +157,6 @@
         transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
         position: relative;
         overflow: hidden;
-        will-change: transform;
 
         &::before {
             content: '';
@@ -242,7 +238,6 @@
         cursor: pointer;
         overflow: hidden;
         transition: transform 0.3s ease, background 0.3s ease;
-        will-change: transform;
         border: 1px solid rgba(79, 195, 247, 0.1);
 
         .statGlow {

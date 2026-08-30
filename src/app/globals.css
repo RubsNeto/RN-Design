@@ -1,307 +1,77 @@
-/* Fontes do Design System: apenas Inter (principal) + Venzoena (secundária) */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
-
-/* Venzoena — fonte secundária de display (peso único; range evita faux-bold) */
-@font-face {
-    font-family: 'Venzoena';
-    src: url('/fonts/Venzoena.ttf') format('truetype'),
-         url('/fonts/Venzoena.otf') format('opentype');
-    font-weight: 100 900;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* Gotham Black — wordmark "RN Design" */
-@font-face {
-    font-family: 'Gotham Black';
-    src: url('/fonts/Gotham-Black.otf') format('opentype');
-    font-weight: 400 900;
-    font-style: normal;
-    font-display: swap;
-}
-
 :root {
-    /* RN Design Color Palette - Azul Claro */
-    --color-primary: #4FC3F7;
-    /* Azul claro primário (logo) */
-    --color-secondary: #0288D1;
-    /* Azul escuro */
-    --color-accent: #00BCD4;
-    /* Cyan accent */
-    --color-background: #E3F2FD;
-    /* Azul muito claro para bg */
-    --color-background-medium: #BBDEFB;
-    /* Azul claro médio */
-    --color-background-dark: #90CAF9;
-    /* Azul claro escuro */
-    --color-text: #0D47A1;
-    /* Azul escuro para texto */
-    --color-text-light: #546E7A;
-    /* Cinza azulado para texto secundário */
+  --color-primary: var(--rn-color-primary);
+  --color-secondary: var(--rn-color-brand-text);
+  --color-accent: var(--rn-color-accent);
+  --color-background: var(--rn-color-background);
+  --color-text: var(--rn-color-text);
+  --color-text-light: var(--rn-color-text-subtle);
+  --font-primary: var(--rn-font-sans);
+  --font-display: var(--rn-font-sans);
+  --font-mono: var(--rn-font-mono);
+}
 
-    /* Legacy gradient variables */
-    --gradient-start: #E3F2FD;
-    --gradient-end: #90CAF9;
-    --gradient-bg: linear-gradient(135deg, #E3F2FD 0%, #BBDEFB 50%, #90CAF9 100%);
-
-    /* Fontes — somente Inter (principal) e Venzoena (secundária) */
-    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    --font-display: 'Venzoena', 'Inter', sans-serif;
-    /* labels usavam mono; agora resolvem para a principal (Inter) */
-    --font-mono: var(--font-primary);
+html {
+  scroll-padding-top: calc(var(--rn-header-height) + var(--rn-space-4));
+  scroll-behavior: smooth;
+  background: var(--rn-color-background);
 }
 
 body {
-    margin: 0px;
-    overflow-x: hidden;
-    overflow-y: auto;
-    cursor: wait;
-    background: #05080F;
-    font-family: var(--font-primary);
+  margin: 0;
+  overflow-x: hidden;
+  background: var(--rn-color-background);
+  color: var(--rn-color-text);
+  cursor: default;
 }
 
-/* Custom Scrollbar Styling */
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #4FC3F7 0%, #0288D1 100%);
-    border-radius: 10px;
-    transition: all 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(180deg, #29B6F6 0%, #0277BD 100%);
-    box-shadow: 0 0 10px rgba(79, 195, 247, 0.5);
-}
-
-/* Firefox scrollbar */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: #4FC3F7 transparent;
-}
-
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: var(--font-primary);
-    font-weight: 900;
-}
-
-/* ============================================
-   VengeanceUI Components - GlowBorderCard
-   ============================================ */
-
-@property --glow-angle {
-    syntax: '<angle>';
-    initial-value: 0deg;
-    inherits: false;
-}
-
-@keyframes glow-angle-rotate {
-    to {
-        --glow-angle: 1turn;
-    }
-}
-
-.glow-conic {
-    border-image: conic-gradient(from var(--glow-angle),
-            var(--glow-color-1, #4FC3F7),
-            var(--glow-color-2, #29B6F6),
-            var(--glow-color-3, #03A9F4),
-            var(--glow-color-4, #0288D1),
-            var(--glow-color-5, #0277BD),
-            var(--glow-color-6, #01579B),
-            var(--glow-color-7, #4FC3F7),
-            var(--glow-color-8, #29B6F6),
-            var(--glow-color-9, #03A9F4),
-            var(--glow-color-10, #0288D1),
-            var(--glow-color-1, #4FC3F7)) 1;
-    animation: glow-angle-rotate var(--glow-animation-duration, 4s) linear infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .glow-conic {
-        animation: none;
-    }
-}
-
-/* ============================================
-   VengeanceUI Components - FlipText
-   ============================================ */
-
-@keyframes flip {
-
-    0%,
-    100% {
-        transform: rotateX(0deg);
-    }
-
-    25%,
-    75% {
-        transform: rotateX(-90deg);
-    }
-}
-
-@keyframes fade {
-
-    0%,
-    24.9% {
-        opacity: 1;
-    }
-
-    25%,
-    74.9% {
-        opacity: var(--opacity, 0);
-    }
-
-    75%,
-    100% {
-        opacity: 1;
-    }
-}
-
-.flip-char {
-    color: inherit;
-    -webkit-text-fill-color: transparent;
-    height: 1.2em;
-    line-height: 1.2em;
-    vertical-align: middle;
-    animation: flip var(--flip-duration, 2.2s) var(--flip-delay, 0s) infinite ease;
-}
-
-.flip-char::before,
-.flip-char::after {
-    color: inherit;
-    -webkit-text-fill-color: currentColor;
-    content: attr(data-char);
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backface-visibility: hidden;
-    animation: fade var(--flip-duration, 2.2s) var(--flip-delay, 0s) infinite ease;
-}
-
-.flip-char::after {
-    transform: translate(-50%, -50%) translateZ(0.6em);
-}
-
-.flip-char::before {
-    transform: translate(-50%, -50%) rotateX(-90deg) translateZ(0.6em);
-    opacity: 0;
-    --opacity: 1;
-}
-
-/* ============================================
-   Smooth Scrolling & Hover Effects
-   ============================================ */
-
-* {
-    box-sizing: border-box;
-}
-
-/* GPU Acceleration & Smooth Rendering */
-html {
-    scroll-behavior: auto;
-    background: #05080F;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-}
-
-/* Performance: Reduce motion for accessibility */
-@media (prefers-reduced-motion: reduce) {
-
-    *,
-    *::before,
-    *::after {
-        animation-duration: 0.01ms !important;
-        animation-iteration-count: 1 !important;
-        transition-duration: 0.01ms !important;
-        scroll-behavior: auto !important;
-    }
-}
-
-/* GPU-accelerated transforms helper */
-.gpu-accelerated {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000px;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* Hover glow effect classe utilitária */
-.hover-glow {
-    transition: box-shadow 0.3s ease, transform 0.3s ease;
-}
-
-.hover-glow:hover {
-    box-shadow: 0 0 30px rgba(79, 195, 247, 0.5);
-    transform: translateY(-5px);
-}
-
-/* Text gradient utility */
-.text-gradient {
-    background: linear-gradient(135deg, #4FC3F7 0%, #0288D1 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-}
-
-/* Animated underline for links */
-.animated-underline {
-    position: relative;
-}
-
-.animated-underline::after {
-    content: '';
-    position: absolute;
-    width: 0;
-    height: 2px;
-    bottom: -2px;
-    left: 0;
-    background: linear-gradient(90deg, #4FC3F7, #0288D1);
-    transition: width 0.3s ease;
-}
-
-.animated-underline:hover::after {
-    width: 100%;
-}
-
-/* Seleção de texto na cor da marca */
-::selection {
-    background: rgba(79, 195, 247, 0.30);
-    color: inherit;
-}
-
-/* Foco acessível e consistente */
-:focus-visible {
-    outline: 2px solid #4FC3F7;
-    outline-offset: 3px;
-    border-radius: 4px;
-}
-
-/* Form elements não herdam a fonte por padrão — força Inter em botões/inputs */
 button,
 input,
 textarea,
 select {
-    font-family: inherit;
+  font: inherit;
+}
+
+::selection {
+  background: var(--rn-brand-200);
+  color: var(--rn-color-text);
+}
+
+::-webkit-scrollbar {
+  width: var(--rn-space-2);
+}
+
+::-webkit-scrollbar-track {
+  background: var(--rn-color-surface);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--rn-color-primary);
+  border-radius: var(--rn-radius-pill);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rn-color-primary) var(--rn-color-surface);
+}
+
+.rn-button:not(.rn-button--ghost):not(.rn-button--secondary):not(.rn-button--danger):not(.rn-button--accent) {
+  color: var(--rn-neutral-0);
+  background: var(--rn-color-link);
+  border-color: var(--rn-color-link);
+}
+
+.rn-button:not(.rn-button--ghost):not(.rn-button--secondary):not(.rn-button--danger):not(.rn-button--accent):hover:not(:disabled) {
+  color: var(--rn-neutral-0);
+  background: var(--rn-color-link-hover);
+  border-color: var(--rn-color-link-hover);
+}
+
+.rn-button svg {
+  color: inherit;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

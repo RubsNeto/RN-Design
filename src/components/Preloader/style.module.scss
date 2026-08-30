@@ -1,35 +1,76 @@
-.introduction{
-    height: 100vh;
-    width: 100vw;
+.introduction {
+  position: fixed;
+  z-index: var(--rn-z-skip-link);
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100svh;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  color: var(--rn-color-on-scene);
+  background: var(--rn-color-scene-deep);
+  will-change: transform;
+
+  &::after {
+    content: '';
+    position: absolute;
+    z-index: 0;
+    right: -5%;
+    bottom: calc(var(--rn-space-10) * -1);
+    left: -5%;
+    height: var(--rn-space-10);
+    background: var(--rn-color-scene-deep);
+    border-radius: 0 0 50% 50%;
+    pointer-events: none;
+  }
+
+  > p {
+    position: relative;
+    z-index: 2;
+    min-height: var(--rn-target-min);
+    margin: 0;
     display: flex;
     align-items: center;
-    justify-content: center;
-    position: fixed;
-    z-index: 99;
-    background-color: #141516;
-    svg{
-        position: absolute;
-        top: 0;
-        width: 100%;
-        height: calc(100% + 300px);
-        path{
-            fill: #141516;
-        }
-    }
-    p{
-        display: flex;
-        color: white;
-        font-size: 42px;
-        align-items: center;
-        position: absolute;
-        z-index: 1;
-        span{
-            display: block;
-            width: 10px;
-            height: 10px;
-            background-color: white;
-            border-radius: 50%;
-            margin-right: 10px;
-        }
-    }
+    color: var(--rn-color-on-scene);
+    font-size: clamp(var(--rn-font-size-7), 5vw, var(--rn-font-size-10));
+    font-weight: var(--rn-weight-semibold);
+    letter-spacing: var(--rn-tracking-heading);
+  }
+}
+
+.brand {
+  position: absolute;
+  z-index: 2;
+  top: var(--rn-space-7);
+  left: 50%;
+  display: flex;
+  align-items: center;
+  gap: var(--rn-space-3);
+  color: var(--rn-color-on-scene-muted);
+  font-size: var(--rn-font-size-1);
+  font-weight: var(--rn-weight-bold);
+  letter-spacing: var(--rn-tracking-eyebrow);
+  text-transform: uppercase;
+  transform: translateX(-50%);
+}
+
+.dot {
+  width: var(--rn-space-3);
+  height: var(--rn-space-3);
+  margin-right: var(--rn-space-3);
+  flex: 0 0 auto;
+  background: var(--rn-gradient-brand);
+  border-radius: var(--rn-radius-pill);
+  box-shadow: var(--rn-shadow-brand);
+}
+
+.word {
+  display: inline-block;
+}
+
+@media (max-width: 37.5rem) {
+  .brand {
+    top: var(--rn-space-5);
+  }
 }

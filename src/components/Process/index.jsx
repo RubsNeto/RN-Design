@@ -6,6 +6,7 @@ import { useRef, useState } from 'react';
 export default function Process() {
     const container = useRef(null);
     const isInView = useInView(container, { once: true, margin: "-100px" });
+    const isAmbientInView = useInView(container, { margin: "-10% 0px -10% 0px" });
     const [activeStep, setActiveStep] = useState(null);
 
     const steps = [
@@ -138,19 +139,23 @@ export default function Process() {
             <div className={styles.backgroundOrbs}>
                 <motion.div
                     className={styles.orb1}
-                    animate={{
+                    animate={isAmbientInView ? {
                         x: [0, 40, 0],
                         y: [0, -30, 0],
-                    }}
-                    transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+                    } : { x: 0, y: 0 }}
+                    transition={isAmbientInView
+                        ? { duration: 10, repeat: Infinity, ease: "easeInOut" }
+                        : { duration: 0 }}
                 />
                 <motion.div
                     className={styles.orb2}
-                    animate={{
+                    animate={isAmbientInView ? {
                         x: [0, -30, 0],
                         y: [0, 40, 0],
-                    }}
-                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                    } : { x: 0, y: 0 }}
+                    transition={isAmbientInView
+                        ? { duration: 12, repeat: Infinity, ease: "easeInOut" }
+                        : { duration: 0 }}
                 />
             </div>
 

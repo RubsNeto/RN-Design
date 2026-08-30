@@ -1,50 +1,64 @@
 'use client';
-import styles from './style.module.scss';
+
 import { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, useReducedMotion } from 'framer-motion';
+import { RnBrandMark } from '@rn-design/system/react';
+import styles from './style.module.scss';
 import { opacity, slideUp } from './anim';
 
-const words = ["Hello", "Bonjour", "Ciao", "やあ", "Hallå", "Guten tag", "Hola", "Olá"]
+const words = ['Hello', 'Bonjour', 'Ciao', 'やあ', 'Hallå', 'Guten Tag', 'Hola', 'Olá'];
 
-export default function Index() {
-    const [index, setIndex] = useState(0);
-    const [dimension, setDimension] = useState({ width: 0, height: 0 });
+export default function Preloader() {
+  const [index, setIndex] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
+  const allowsMotion = shouldReduceMotion === false;
 
-    useEffect(() => {
-        setDimension({ width: window.innerWidth, height: window.innerHeight })
-    }, [])
+  useEffect(() => {
+    if (!allowsMotion || index === words.length - 1) return undefined;
 
-    useEffect(() => {
-        if (index == words.length - 1) return;
-        setTimeout(() => {
-            setIndex(index + 1)
-        }, index == 0 ? 600 : 120)
-    }, [index])
+    const wordTimer = window.setTimeout(
+      () => setIndex((currentIndex) => currentIndex + 1),
+      index === 0 ? 420 : 135,
+    );
 
-    const initialPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height + 300} 0 ${dimension.height}  L0 0`
-    const targetPath = `M0 0 L${dimension.width} 0 L${dimension.width} ${dimension.height} Q${dimension.width / 2} ${dimension.height} 0 ${dimension.height}  L0 0`
+    return () => window.clearTimeout(wordTimer);
+  }, [allowsMotion, index]);
 
-    const curve = {
-        initial: {
-            d: initialPath,
-            transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1] }
-        },
-        exit: {
-            d: targetPath,
-            transition: { duration: 0.7, ease: [0.76, 0, 0.24, 1], delay: 0.3 }
-        }
-    }
+  const containerExit = shouldReduceMotion
+    ? { opacity: 0, transition: { duration: 0.12 } }
+    : slideUp.exit;
 
-    return (
-        <motion.div variants={slideUp} initial="initial" exit="exit" className={styles.introduction}>
-            {dimension.width > 0 &&
-                <>
-                    <motion.p variants={opacity} initial="initial" animate="enter"><span></span>{words[index]}</motion.p>
-                    <svg>
-                        <motion.path variants={curve} initial="initial" exit="exit"></motion.path>
-                    </svg>
-                </>
-            }
-        </motion.div>
-    )
+  return (
+    <motion.div
+      initial={{ opacity: 1 }}
+      exit={containerExit}
+      className={styles.introduction}
+      role="status"
+      aria-live="polite"
+      aria-label="Carregando o site da RN Design"
+    >
+      <div className={styles.brand} aria-hidden="true">
+        <RnBrandMark size="md" />
+        <span>RN Design</span>
+      </div>
+
+      <motion.p
+        aria-hidden="true"
+        variants={opacity}
+        initial="initial"
+        animate={allowsMotion ? 'enter' : { opacity: 0.75 }}
+      >
+        <span className={styles.dot} aria-hidden="true" />
+        <motion.span
+          key={words[index]}
+          className={styles.word}
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: allowsMotion ? 0.14 : 0 }}
+        >
+          {words[index]}
+        </motion.span>
+      </motion.p>
+    </motion.div>
+  );
 }

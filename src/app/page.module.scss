@@ -1,0 +1,56 @@
+.main {
+  min-width: 0;
+  overflow: clip;
+  background: var(--rn-color-background);
+}
+
+.siteContent {
+  min-width: 0;
+}
+
+.deferredSection,
+.deferredPlaceholder {
+  min-height: var(--deferred-min-height, 100svh);
+}
+
+.deferredSection {
+  min-width: 0;
+}
+
+.deferredPlaceholder {
+  background: var(--rn-color-background);
+}
+
+.sectionLoader {
+  position: relative;
+  overflow: hidden;
+  min-height: 50vh;
+  background: var(--rn-color-scene-deep);
+}
+
+.sectionLoader::after {
+  position: absolute;
+  inset: 0;
+  content: '';
+  background: linear-gradient(
+    110deg,
+    transparent 30%,
+    color-mix(in srgb, var(--rn-color-primary) 14%, transparent) 50%,
+    transparent 70%
+  );
+  transform: translate3d(-100%, 0, 0);
+  animation: loadingSweep var(--rn-duration-ambient) linear infinite;
+  will-change: transform;
+}
+
+@keyframes loadingSweep {
+  to {
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sectionLoader::after {
+    animation: none;
+  }
+}

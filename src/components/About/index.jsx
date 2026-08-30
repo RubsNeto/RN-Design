@@ -42,7 +42,7 @@ export default function About() {
     }), []);
 
     return (
-        <section id="about" ref={container} className={styles.about}>
+        <section ref={container} className={styles.about}>
             {/* Static Background Orbs - No animation */}
             <div className={styles.backgroundOrbs}>
                 <div className={styles.orb1} />

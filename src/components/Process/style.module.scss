@@ -19,7 +19,6 @@
         .orb2 {
             position: absolute;
             border-radius: 50%;
-            will-change: transform;
         }
 
         .orb1 {
@@ -123,7 +122,6 @@
                 rgba(79, 195, 247, 0.6) 0%,
                 rgba(0, 188, 212, 0.4) 50%,
                 rgba(2, 136, 209, 0.3) 100%);
-        will-change: transform;
     }
 
     .stepsContainer {
@@ -237,7 +235,6 @@
         right: 0;
         height: 100%;
         background: linear-gradient(90deg, rgba(79, 195, 247, 0.4), rgba(79, 195, 247, 0.2));
-        will-change: transform;
     }
 
     .content {
