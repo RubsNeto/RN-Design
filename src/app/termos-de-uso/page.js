@@ -8,7 +8,7 @@ import {
 } from '../../config/site';
 
 export const metadata = {
-    title: 'Termos de Uso | RN Design',
+    title: 'Termos de Uso',
     description:
         'Condições de uso do site e das soluções de atendimento e automação da RN Design, incluindo as regras aplicáveis às integrações com a Plataforma WhatsApp Business.',
 };
@@ -246,7 +246,12 @@ export default function TermosDeUso() {
             <p>
                 Dúvidas sobre estes Termos podem ser encaminhadas à {COMPANY_NAME} pelo
                 WhatsApp{' '}
-                <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer">
+                <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`WhatsApp da ${COMPANY_NAME} (abre em nova aba)`}
+                >
                     {WHATSAPP_NUMBER}
                 </a>
                 .

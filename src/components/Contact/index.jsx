@@ -1,108 +1,131 @@
-"use client";
+'use client';
 
-import styles from "./style.module.scss";
-import { motion } from "framer-motion";
-import { HandWrittenTitle } from "../ui/HandWrittenTitle";
-
-const social = [
-	{
-		label: "Instagram",
-		href: "https://www.instagram.com/rubs_neto/",
-		brand: "linear-gradient(45deg, #F58529 0%, #DD2A7B 45%, #8134AF 100%)",
-		solid: "#DD2A7B",
-	},
-	{
-		label: "LinkedIn",
-		href: "https://www.linkedin.com/in/dev-rubens/",
-		brand: "linear-gradient(#0A66C2, #0A66C2)",
-		solid: "#0A66C2",
-	},
-	{
-		label: "WhatsApp",
-		href: "https://wa.me/5562999299020?text=Vim%20do%20site%20e%20gostaria%20de%20saber%20mais",
-		brand: "linear-gradient(#25D366, #25D366)",
-		solid: "#25D366",
-	},
-];
-
-const reveal = {
-	hidden: { opacity: 0, y: 24 },
-	visible: (i = 0) => ({
-		opacity: 1,
-		y: 0,
-		transition: { duration: 0.6, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] },
-	}),
-};
+import Image from 'next/image';
+import { motion, useInView } from 'framer-motion';
+import { useRef } from 'react';
+import rnLogo from '@rn-design/system/logo.png';
+import styles from './style.module.scss';
+import {
+  COMPANY_LEGAL_NAME,
+  PROJECT_WHATSAPP_LINK,
+  SOCIAL_LINKS,
+} from '../../config/site';
 
 const Arrow = () => (
-	<svg
-		className={styles.arrow}
-		viewBox="0 0 24 24"
-		fill="none"
-		xmlns="http://www.w3.org/2000/svg"
-		aria-hidden="true"
-	>
-		<path
-			d="M7 17L17 7M17 7H8M17 7V16"
-			stroke="currentColor"
-			strokeWidth="2"
-			strokeLinecap="round"
-			strokeLinejoin="round"
-		/>
-	</svg>
+  <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+    <path d="M7 17L17 7M17 7H8M17 7V16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+  </svg>
 );
 
-export default function Index() {
-	return (
-		<div className={styles.contact}>
-			{/* CTA centralizado no centro da tela */}
-			<div className={styles.cta}>
-				<HandWrittenTitle
-					prefix="Vamos criar algo"
-					highlight="excepcional"
-					subtitle="Disponível para novos projetos"
-					ctaLabel="Entre em contato"
-					ctaHref="https://wa.me/5562999299020?text=Vim%20do%20site%20e%20gostaria%20de%20saber%20mais"
-				/>
-			</div>
+export default function Contact() {
+  const footerRef = useRef(null);
+  const orbitRef = useRef(null);
+  const isInView = useInView(footerRef, { margin: '-12% 0px' });
+  const isOrbitInView = useInView(orbitRef, { margin: '20% 0px' });
 
-			{/* Rodapé ancorado embaixo (estático) */}
-			<div className={styles.footerBottom}>
-				<nav className={styles.links}>
-					{social.map((s, i) => (
-						<motion.a
-							key={s.label}
-							href={s.href}
-							target="_blank"
-							rel="noopener noreferrer"
-							className={styles.link}
-							style={{ "--brand": s.brand, "--brand-solid": s.solid }}
-							custom={i}
-							variants={reveal}
-							initial="hidden"
-							whileInView="visible"
-							viewport={{ once: true, amount: 0.4 }}
-						>
-							<span className={styles.linkText}>{s.label}</span>
-							<Arrow />
-						</motion.a>
-					))}
-				</nav>
+  return (
+    <footer
+      ref={footerRef}
+      className={`${styles.contact} rn-story-scene rn-story-scene--deep`}
+      data-ambient={isInView ? 'running' : 'paused'}
+      aria-labelledby="contact-title"
+    >
+      <span className="rn-scene-grid" aria-hidden="true" />
+      <span className={styles.closingGlow} aria-hidden="true" />
+      <span
+        ref={orbitRef}
+        className={styles.brandOrbit}
+        data-ambient={isOrbitInView ? 'running' : 'paused'}
+        aria-hidden="true"
+      >
+        <Image src="/images/estrela-rn-contorno.svg" fill sizes="36rem" alt="" />
+      </span>
 
-				<div className={styles.wordmarkWrap}>
-					<motion.div
-						className={styles.wordmark}
-						aria-hidden="true"
-						initial={{ opacity: 0, y: 50 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true, amount: 0.2 }}
-						transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-					>
-						RN Design
-					</motion.div>
-					<span className={styles.copyright}>2026 © RN Design</span>
-				</div>
-			</div>
-		</div>
-	);
+      <div className={`rn-story-scene__inner ${styles.inner}`}>
+        <div className={styles.closingGrid}>
+          <motion.div
+            className={styles.headingBlock}
+            initial={{ y: 24 }}
+            whileInView={{ y: 0 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.68, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <p className="rn-section-meta" data-scene="dark">
+              <span className="rn-section-index">06</span>
+              Próximo passo
+            </p>
+            <h2 id="contact-title" className="rn-story-heading">
+              Seu próximo produto começa com <span>uma conversa clara.</span>
+            </h2>
+            <p className={`rn-story-copy ${styles.closingCopy}`}>
+              Conte o contexto, o objetivo e o momento do seu projeto. A RN organiza o
+              caminho e mostra qual é o próximo passo mais inteligente.
+            </p>
+          </motion.div>
+
+          <motion.aside
+            className={`rn-story-ticket ${styles.ticket}`}
+            aria-label="Iniciar um projeto com a RN Design"
+            initial={{ y: 28, scale: 0.985 }}
+            whileInView={{ y: 0, scale: 1 }}
+            viewport={{ once: true, amount: 0.4 }}
+            transition={{ duration: 0.72, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+          >
+            <div className={styles.ticketTop}>
+              <Image
+                src={rnLogo}
+                alt="RN Design & Serviços"
+                className={styles.ticketLogo}
+              />
+              <span className={styles.availability}><i aria-hidden="true" /> Atendimento direto</span>
+            </div>
+            <div className={styles.ticketBody}>
+              <span>Conversa inicial</span>
+              <strong>Vamos entender o que precisa ser construído.</strong>
+              <p>Sem formulário longo. Você fala diretamente com quem conduz o projeto.</p>
+              <dl className={styles.ticketFacts}>
+                <div><dt>Canal</dt><dd>WhatsApp</dd></div>
+                <div><dt>Condução</dt><dd>Direta</dd></div>
+                <div><dt>Formato</dt><dd>Remoto</dd></div>
+              </dl>
+            </div>
+            <a className="rn-premium-button" href={PROJECT_WHATSAPP_LINK} target="_blank" rel="noopener noreferrer">
+              Conversar pelo WhatsApp
+              <Arrow />
+              <span className="rn-visually-hidden"> (abre em nova aba)</span>
+            </a>
+          </motion.aside>
+        </div>
+
+        <nav className={styles.socialNav} aria-label="Canais da RN Design">
+          {SOCIAL_LINKS.map((item, index) => (
+            <motion.a
+              key={item.label}
+              href={item.href}
+              target="_blank"
+              rel={item.label === 'WhatsApp' ? 'noopener noreferrer' : 'me noopener noreferrer'}
+              aria-label={`${item.label} da RN Design (abre em nova aba)`}
+              initial={{ y: 14 }}
+              whileInView={{ y: 0 }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ duration: 0.5, delay: index * 0.045, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <span>{String(index + 1).padStart(2, '0')}</span>
+              <strong>{item.label}</strong>
+              <Arrow />
+            </motion.a>
+          ))}
+        </nav>
+
+        <div className={styles.footerBottom}>
+          <p>© {new Date().getFullYear()} {COMPANY_LEGAL_NAME}</p>
+          <div>
+            <a href="/politica-de-privacidade">Política de Privacidade</a>
+            <a href="/termos-de-uso">Termos de Uso</a>
+          </div>
+          <a href="#home">Voltar ao início <span aria-hidden="true">↑</span></a>
+        </div>
+      </div>
+    </footer>
+  );
 }

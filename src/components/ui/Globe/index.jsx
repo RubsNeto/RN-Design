@@ -1,9 +1,26 @@
 "use client";
 
-import { cn } from "@/lib/utils";
 import { useCallback, useEffect, useMemo, useRef } from "react";
 
-const TARGET_FRAME_INTERVAL = 1000 / 30;
+const STANDARD_FRAME_INTERVAL = 1000 / 30;
+const FALLBACK_SKY = [71, 171, 225];
+const FALLBACK_CYAN = [63, 208, 233];
+const FALLBACK_BLUE_SOFT = [90, 154, 238];
+
+function parseHexColor(value, fallback) {
+	const normalized = value.trim().replace('#', '');
+	if (!/^[\da-f]{6}$/i.test(normalized)) return fallback;
+
+	return [
+		Number.parseInt(normalized.slice(0, 2), 16),
+		Number.parseInt(normalized.slice(2, 4), 16),
+		Number.parseInt(normalized.slice(4, 6), 16),
+	];
+}
+
+function alphaColor([red, green, blue], alpha) {
+	return `rgb${'a'}(${red}, ${green}, ${blue}, ${alpha})`;
+}
 
 const DEFAULT_MARKERS = [
 	{ lat: 37.78, lng: -122.42, label: "San Francisco" },
@@ -59,41 +76,38 @@ function project(x, y, z, cx, cy, fov) {
 
 export function Globe({
 	className,
-	dotColor = "rgba(79, 195, 247, ALPHA)",
-	arcColor = "rgba(79, 195, 247, 0.5)",
-	markerColor = "rgba(120, 220, 255, 1)",
 	autoRotateSpeed = 0.002,
 	connections = DEFAULT_CONNECTIONS,
 	markers = DEFAULT_MARKERS,
 	rotationRef = null,
+	descriptionId,
 }) {
 	const canvasRef = useRef(null);
 	const contextRef = useRef(null);
 	const metricsRef = useRef({ width: 0, height: 0, dpr: 1, glow: null });
 	const rotYRef = useRef(0.4);
 	const rotXRef = useRef(0.3);
-	const dragRef = useRef({
-		active: false,
-		startX: 0,
-		startY: 0,
-		startRotY: 0,
-		startRotX: 0,
-	});
 	const animRef = useRef(0);
+	const frameIntervalRef = useRef(STANDARD_FRAME_INTERVAL);
+	const maxDprRef = useRef(1.5);
 	const frameTimerRef = useRef(0);
 	const lastFrameRef = useRef(0);
 	const timeRef = useRef(0);
 	const dotsRef = useRef([]);
 	const dotBucketsRef = useRef(Array.from({ length: 11 }, () => []));
+	const dotPaletteRef = useRef(
+		Array.from({ length: 11 }, (_, index) => alphaColor(FALLBACK_SKY, (index / 10).toFixed(2))),
+	);
+	const canvasColorsRef = useRef({
+		arc: alphaColor(FALLBACK_CYAN, 0.5),
+		marker: alphaColor(FALLBACK_BLUE_SOFT, 1),
+		glowStart: alphaColor(FALLBACK_SKY, 0.04),
+		glowEnd: alphaColor(FALLBACK_SKY, 0),
+		outline: alphaColor(FALLBACK_CYAN, 0.06),
+	});
+	const canvasFontRef = useRef('"Montserrat RN", sans-serif');
 	const visibleRef = useRef(false);
 	const reducedMotionRef = useRef(false);
-
-	const dotPalette = useMemo(
-		() => Array.from({ length: 11 }, (_, index) => (
-			dotColor.replace("ALPHA", (index / 10).toFixed(2))
-		)),
-		[dotColor],
-	);
 	const connectionPoints = useMemo(
 		() => connections.map((connection) => ({
 			from: latLngToXYZ(connection.from[0], connection.from[1], 1),
@@ -111,9 +125,32 @@ export function Globe({
 	);
 
 	useEffect(() => {
+		const rootStyles = window.getComputedStyle(document.documentElement);
+		const sky = parseHexColor(rootStyles.getPropertyValue('--rn-color-primary'), FALLBACK_SKY);
+		const cyan = parseHexColor(rootStyles.getPropertyValue('--rn-cyan'), FALLBACK_CYAN);
+		const blueSoft = parseHexColor(rootStyles.getPropertyValue('--rn-blue-soft'), FALLBACK_BLUE_SOFT);
+		dotPaletteRef.current = Array.from(
+			{ length: 11 },
+			(_, index) => alphaColor(sky, (index / 10).toFixed(2)),
+		);
+		canvasColorsRef.current = {
+			arc: alphaColor(cyan, 0.5),
+			marker: alphaColor(blueSoft, 1),
+			glowStart: alphaColor(sky, 0.04),
+			glowEnd: alphaColor(sky, 0),
+			outline: alphaColor(cyan, 0.06),
+		};
+		canvasFontRef.current = rootStyles.getPropertyValue('--rn-font-sans').trim()
+			|| '"Montserrat RN", sans-serif';
+
 		const compact = window.matchMedia("(max-width: 768px)").matches;
-		const lowPower = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
-		const numDots = compact || lowPower ? 640 : 900;
+		const saveData = Boolean(navigator.connection?.saveData);
+		const lowMemory = navigator.deviceMemory && navigator.deviceMemory <= 4;
+		const lowCpu = navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4;
+		const lowPower = saveData || lowMemory || lowCpu;
+		const numDots = saveData ? 360 : lowPower ? 480 : compact ? 640 : 900;
+		frameIntervalRef.current = lowPower ? 1000 / 20 : STANDARD_FRAME_INTERVAL;
+		maxDprRef.current = lowPower ? 1 : 1.5;
 		const dots = [];
 		const goldenRatio = (1 + Math.sqrt(5)) / 2;
 
@@ -145,7 +182,7 @@ export function Globe({
 			const rect = canvas.getBoundingClientRect();
 			const width = Math.max(1, Math.round(rect.width));
 			const height = Math.max(1, Math.round(rect.height));
-			const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+			const dpr = Math.min(window.devicePixelRatio || 1, maxDprRef.current);
 			const previous = metricsRef.current;
 
 			if (
@@ -169,8 +206,8 @@ export function Globe({
 				cy,
 				radius * 1.5,
 			);
-			glow.addColorStop(0, "rgba(60, 140, 255, 0.04)");
-			glow.addColorStop(1, "rgba(60, 140, 255, 0)");
+			glow.addColorStop(0, canvasColorsRef.current.glowStart);
+			glow.addColorStop(1, canvasColorsRef.current.glowEnd);
 			metricsRef.current = { width, height, dpr, glow };
 		};
 
@@ -189,13 +226,14 @@ export function Globe({
 		if (!visibleRef.current) return;
 
 		const previousFrame = lastFrameRef.current;
-		const elapsed = previousFrame ? timestamp - previousFrame : TARGET_FRAME_INTERVAL;
+		const frameInterval = frameIntervalRef.current;
+		const elapsed = previousFrame ? timestamp - previousFrame : frameInterval;
 		lastFrameRef.current = timestamp;
 		const scheduleNextFrame = () => {
 			window.clearTimeout(frameTimerRef.current);
 			frameTimerRef.current = window.setTimeout(() => {
 				animRef.current = window.requestAnimationFrame(draw);
-			}, TARGET_FRAME_INTERVAL * 0.66);
+			}, frameInterval * 0.66);
 		};
 
 		const context = contextRef.current;
@@ -211,12 +249,10 @@ export function Globe({
 		const radius = Math.min(width, height) * 0.38;
 		const fov = 600;
 
-		if (!dragRef.current.active) {
-			if (rotationRef && rotationRef.current != null) {
-				rotYRef.current = rotationRef.current;
-			} else {
-				rotYRef.current += autoRotateSpeed * frameScale;
-			}
+		if (rotationRef && rotationRef.current != null) {
+			rotYRef.current = rotationRef.current;
+		} else {
+			rotYRef.current += autoRotateSpeed * frameScale;
 		}
 
 		timeRef.current += 0.015 * frameScale;
@@ -227,7 +263,7 @@ export function Globe({
 
 		context.beginPath();
 		context.arc(cx, cy, radius, 0, Math.PI * 2);
-		context.strokeStyle = "rgba(100, 180, 255, 0.06)";
+		context.strokeStyle = canvasColorsRef.current.outline;
 		context.lineWidth = 1;
 		context.stroke();
 
@@ -261,7 +297,7 @@ export function Globe({
 				context.moveTo(x + size, y);
 				context.arc(x, y, size, 0, Math.PI * 2);
 			}
-			context.fillStyle = dotPalette[paletteIndex];
+			context.fillStyle = dotPaletteRef.current[paletteIndex];
 			context.fill();
 		});
 
@@ -295,7 +331,7 @@ export function Globe({
 			context.beginPath();
 			context.moveTo(screenX1, screenY1);
 			context.quadraticCurveTo(controlX, controlY, screenX2, screenY2);
-			context.strokeStyle = arcColor;
+			context.strokeStyle = canvasColorsRef.current.arc;
 			context.lineWidth = 1.2;
 			context.stroke();
 
@@ -308,11 +344,11 @@ export function Globe({
 				+ progress ** 2 * screenY2;
 			context.beginPath();
 			context.arc(pointX, pointY, 2, 0, Math.PI * 2);
-			context.fillStyle = markerColor;
+			context.fillStyle = canvasColorsRef.current.marker;
 			context.fill();
 		}
 
-		context.font = "10px system-ui, sans-serif";
+		context.font = `10px ${canvasFontRef.current}`;
 		for (const marker of markerPoints) {
 			let [x, y, z] = marker.point.map((value) => value * radius);
 			[x, y, z] = rotateX(x, y, z, rotationX);
@@ -323,7 +359,7 @@ export function Globe({
 			const pulse = Math.sin(time * 2 + marker.lat) * 0.5 + 0.5;
 			context.beginPath();
 			context.arc(screenX, screenY, 4 + pulse * 4, 0, Math.PI * 2);
-			context.strokeStyle = markerColor.replace(
+			context.strokeStyle = canvasColorsRef.current.marker.replace(
 				"1)",
 				`${(0.2 + pulse * 0.15).toFixed(2)})`,
 			);
@@ -331,11 +367,11 @@ export function Globe({
 			context.stroke();
 			context.beginPath();
 			context.arc(screenX, screenY, 2.5, 0, Math.PI * 2);
-			context.fillStyle = markerColor;
+			context.fillStyle = canvasColorsRef.current.marker;
 			context.fill();
 
 			if (marker.label) {
-				context.fillStyle = markerColor.replace("1)", "0.6)");
+				context.fillStyle = canvasColorsRef.current.marker.replace("1)", "0.6)");
 				context.fillText(marker.label, screenX + 8, screenY + 3);
 			}
 		}
@@ -343,7 +379,7 @@ export function Globe({
 		if (visibleRef.current && !reducedMotionRef.current) {
 			scheduleNextFrame();
 		}
-	}, [arcColor, autoRotateSpeed, connectionPoints, dotPalette, markerColor, markerPoints, rotationRef]);
+	}, [autoRotateSpeed, connectionPoints, markerPoints, rotationRef]);
 
 	useEffect(() => {
 		const canvas = canvasRef.current;
@@ -384,43 +420,14 @@ export function Globe({
 		};
 	}, [draw]);
 
-	const onPointerDown = useCallback((event) => {
-		dragRef.current = {
-			active: true,
-			startX: event.clientX,
-			startY: event.clientY,
-			startRotY: rotYRef.current,
-			startRotX: rotXRef.current,
-		};
-		event.currentTarget.setPointerCapture(event.pointerId);
-	}, []);
-
-	const onPointerMove = useCallback((event) => {
-		if (!dragRef.current.active) return;
-		const deltaX = event.clientX - dragRef.current.startX;
-		const deltaY = event.clientY - dragRef.current.startY;
-		rotYRef.current = dragRef.current.startRotY + deltaX * 0.005;
-		rotXRef.current = Math.max(
-			-1,
-			Math.min(1, dragRef.current.startRotX + deltaY * 0.005),
-		);
-	}, []);
-
-	const onPointerUp = useCallback(() => {
-		dragRef.current.active = false;
-	}, []);
-
 	return (
 		<canvas
 			ref={canvasRef}
-			className={cn(className)}
-			style={{ width: "100%", height: "100%", cursor: "grab", touchAction: "none" }}
+			className={className}
+			style={{ width: "100%", height: "100%" }}
 			role="img"
-			aria-label="Globo interativo com conexões internacionais"
-			onPointerDown={onPointerDown}
-			onPointerMove={onPointerMove}
-			onPointerUp={onPointerUp}
-			onPointerCancel={onPointerUp}
+			aria-label="Rede internacional animada"
+			aria-describedby={descriptionId}
 		/>
 	);
 }

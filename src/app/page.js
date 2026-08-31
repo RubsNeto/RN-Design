@@ -1,64 +1,34 @@
-'use client';
+"use client";
 
-import { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
-import { AnimatePresence, MotionConfig } from 'framer-motion';
-import styles from './page.module.scss';
-import Preloader from '../components/Preloader';
-import Landing from '../components/Landing';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, MotionConfig } from "framer-motion";
+import styles from "./page.module.scss";
+import Preloader from "../components/Preloader";
+import Landing from "../components/Landing";
+import About from "../components/About";
+import Services from "../components/Services";
+import GlobeSection from "../components/GlobeSection";
+import Process from "../components/Process";
+import Projects from "../components/Projects";
+import Contact from "../components/Contact";
+import PremiumExperience from "../components/PremiumExperience";
+import ChapterBridge from "../components/ChapterBridge";
 
-const About = lazy(() => import('../components/About'));
-const Services = lazy(() => import('../components/Services'));
-const SkewCards = lazy(() => import('../components/SkewCards'));
-const GlobeSection = lazy(() => import('../components/GlobeSection'));
-const Process = lazy(() => import('../components/Process'));
-const Projects = lazy(() => import('../components/Projects'));
-const SlidingImages = lazy(() => import('../components/SlidingImages'));
-const Contact = lazy(() => import('../components/Contact'));
-
-function SectionLoader() {
-  return <div className={styles.sectionLoader} aria-hidden="true" />;
-}
-
-function DeferredSection({ children, enabled, id, minHeight = '100svh' }) {
-  const targetRef = useRef(null);
-  const [shouldRender, setShouldRender] = useState(false);
-
-  useEffect(() => {
-    if (!enabled || shouldRender || !targetRef.current) return undefined;
-
-    if (!('IntersectionObserver' in window)) {
-      setShouldRender(true);
-      return undefined;
-    }
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (!entry.isIntersecting) return;
-
-        setShouldRender(true);
-        observer.disconnect();
-      },
-      { rootMargin: '320px 0px', threshold: 0.01 },
-    );
-
-    observer.observe(targetRef.current);
-    return () => observer.disconnect();
-  }, [enabled, shouldRender]);
-
+function StoryChapter({
+  children,
+  id,
+  chapter = id,
+  minHeight = "100svh",
+  bridge = true,
+}) {
   return (
     <div
       id={id}
-      ref={targetRef}
       className={styles.deferredSection}
-      style={{ '--deferred-min-height': minHeight }}
+      style={{ "--deferred-min-height": minHeight }}
     >
-      {shouldRender ? (
-        <Suspense fallback={<SectionLoader />}>
-          {children}
-        </Suspense>
-      ) : (
-        <div className={styles.deferredPlaceholder} aria-hidden="true" />
-      )}
+      {children}
+      {bridge && <ChapterBridge chapter={chapter} />}
     </div>
   );
 }
@@ -68,9 +38,9 @@ function restoreChromeState(entries) {
     element.inert = inert;
 
     if (ariaHidden === null) {
-      element.removeAttribute('aria-hidden');
+      element.removeAttribute("aria-hidden");
     } else {
-      element.setAttribute('aria-hidden', ariaHidden);
+      element.setAttribute("aria-hidden", ariaHidden);
     }
   });
 }
@@ -79,44 +49,67 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isHeroReady, setIsHeroReady] = useState(false);
   const [isHeroAssetReady, setIsHeroAssetReady] = useState(false);
-  const [hasMinimumLoadTimeElapsed, setHasMinimumLoadTimeElapsed] = useState(false);
-  const [canLoadBelowFold, setCanLoadBelowFold] = useState(false);
-  const bodyStateRef = useRef({ cursor: '', overflow: '' });
+  const [hasMinimumLoadTimeElapsed, setHasMinimumLoadTimeElapsed] =
+    useState(false);
+  const bodyStateRef = useRef({ cursor: "", overflow: "" });
   const chromeStateRef = useRef([]);
   const maximumLoadTimerRef = useRef();
   const hasCompletedIntroRef = useRef(false);
+  const initialHashRef = useRef("");
   const markHeroAssetReady = useCallback(() => setIsHeroAssetReady(true), []);
 
   useEffect(() => {
-    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)",
+    ).matches;
+    const saveData = Boolean(navigator.connection?.saveData);
+    const hasSeenIntro =
+      window.sessionStorage.getItem("rn-intro-seen") === "true";
+    initialHashRef.current = window.location.hash;
+
+    if (hasSeenIntro) {
+      hasCompletedIntroRef.current = true;
+      setHasMinimumLoadTimeElapsed(true);
+      setIsLoading(false);
+      setIsHeroReady(true);
+      return undefined;
+    }
+
+    window.sessionStorage.setItem("rn-intro-seen", "true");
+
     const previousOverflow = document.body.style.overflow;
     const previousCursor = document.body.style.cursor;
 
-    bodyStateRef.current = { cursor: previousCursor, overflow: previousOverflow };
-    document.body.style.overflow = 'hidden';
-    document.body.style.cursor = 'wait';
+    bodyStateRef.current = {
+      cursor: previousCursor,
+      overflow: previousOverflow,
+    };
+    document.body.style.overflow = "hidden";
+    document.body.style.cursor = "wait";
 
-    const chromeElements = Array.from(document.querySelectorAll('.rn-skip-link, header'));
+    const chromeElements = Array.from(
+      document.querySelectorAll(".rn-skip-link, header"),
+    );
     chromeStateRef.current = chromeElements.map((element) => ({
       element,
       inert: element.inert,
-      ariaHidden: element.getAttribute('aria-hidden'),
+      ariaHidden: element.getAttribute("aria-hidden"),
     }));
     chromeElements.forEach((element) => {
       element.inert = true;
-      element.setAttribute('aria-hidden', 'true');
+      element.setAttribute("aria-hidden", "true");
     });
 
     const minimumTimer = window.setTimeout(
       () => setHasMinimumLoadTimeElapsed(true),
-      reducedMotion ? 240 : 1500,
+      reducedMotion || saveData ? 180 : 1500,
     );
     maximumLoadTimerRef.current = window.setTimeout(
       () => {
         maximumLoadTimerRef.current = undefined;
         setIsLoading(false);
       },
-      reducedMotion ? 700 : 2800,
+      reducedMotion || saveData ? 520 : 2800,
     );
 
     return () => {
@@ -140,40 +133,25 @@ export default function Home() {
     setIsLoading(false);
   }, [hasMinimumLoadTimeElapsed, isHeroAssetReady, isLoading]);
 
-  useEffect(() => {
-    if (!isHeroReady) return undefined;
-
-    const releaseBelowFold = () => setCanLoadBelowFold(true);
-    const releaseWithKeyboard = (event) => {
-      if (['ArrowDown', 'PageDown', 'End', ' '].includes(event.key)) {
-        releaseBelowFold();
-      }
-    };
-    const deferredTimer = window.setTimeout(releaseBelowFold, 4200);
-
-    window.addEventListener('scroll', releaseBelowFold, { passive: true, once: true });
-    window.addEventListener('wheel', releaseBelowFold, { passive: true, once: true });
-    window.addEventListener('touchstart', releaseBelowFold, { passive: true, once: true });
-    window.addEventListener('keydown', releaseWithKeyboard);
-
-    return () => {
-      window.clearTimeout(deferredTimer);
-      window.removeEventListener('scroll', releaseBelowFold);
-      window.removeEventListener('wheel', releaseBelowFold);
-      window.removeEventListener('touchstart', releaseBelowFold);
-      window.removeEventListener('keydown', releaseWithKeyboard);
-    };
-  }, [isHeroReady]);
-
   const completeIntro = () => {
     if (hasCompletedIntroRef.current) return;
 
     hasCompletedIntroRef.current = true;
+    window.sessionStorage.setItem("rn-intro-seen", "true");
     setIsHeroReady(true);
     document.body.style.overflow = bodyStateRef.current.overflow;
-    document.body.style.cursor = bodyStateRef.current.cursor || 'default';
+    document.body.style.cursor = bodyStateRef.current.cursor || "default";
     restoreChromeState(chromeStateRef.current);
-    window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+    const target = initialHashRef.current
+      ? document.querySelector(initialHashRef.current)
+      : null;
+    if (target) {
+      window.requestAnimationFrame(() =>
+        target.scrollIntoView({ block: "start" }),
+      );
+    } else {
+      window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    }
   };
 
   return (
@@ -181,7 +159,7 @@ export default function Home() {
       <main
         id="main-content"
         className={`rn-story-page ${styles.main}`}
-        aria-busy={!isHeroReady ? 'true' : undefined}
+        aria-busy={!isHeroReady ? "true" : undefined}
       >
         <AnimatePresence mode="wait" onExitComplete={completeIntro}>
           {isLoading && <Preloader />}
@@ -189,9 +167,10 @@ export default function Home() {
 
         <div
           className={styles.siteContent}
-          inert={!isHeroReady ? '' : undefined}
-          aria-hidden={!isHeroReady ? 'true' : undefined}
+          inert={!isHeroReady ? "" : undefined}
+          aria-hidden={!isHeroReady ? "true" : undefined}
         >
+          <PremiumExperience />
           <div id="home">
             <Landing
               isReady={isHeroReady}
@@ -199,30 +178,24 @@ export default function Home() {
             />
           </div>
 
-          <DeferredSection id="about" enabled={canLoadBelowFold} minHeight="100svh">
+          <StoryChapter id="about" minHeight="100svh">
             <About />
-          </DeferredSection>
-          <DeferredSection id="services" enabled={canLoadBelowFold} minHeight="100svh">
+          </StoryChapter>
+          <StoryChapter id="services" minHeight="100svh">
             <Services />
-          </DeferredSection>
-          <DeferredSection enabled={canLoadBelowFold} minHeight="100svh">
-            <SkewCards />
-          </DeferredSection>
-          <DeferredSection enabled={canLoadBelowFold} minHeight="100svh">
+          </StoryChapter>
+          <StoryChapter id="scale" minHeight="80svh">
             <GlobeSection />
-          </DeferredSection>
-          <DeferredSection enabled={canLoadBelowFold} minHeight="100svh">
+          </StoryChapter>
+          <StoryChapter chapter="process" minHeight="100svh">
             <Process />
-          </DeferredSection>
-          <DeferredSection id="work" enabled={canLoadBelowFold} minHeight="80svh">
+          </StoryChapter>
+          <StoryChapter id="work" minHeight="100svh">
             <Projects />
-          </DeferredSection>
-          <DeferredSection enabled={canLoadBelowFold} minHeight="60svh">
-            <SlidingImages />
-          </DeferredSection>
-          <DeferredSection id="contact" enabled={canLoadBelowFold} minHeight="100svh">
+          </StoryChapter>
+          <StoryChapter id="contact" minHeight="100svh" bridge={false}>
             <Contact />
-          </DeferredSection>
+          </StoryChapter>
         </div>
       </main>
     </MotionConfig>

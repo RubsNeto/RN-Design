@@ -7,7 +7,7 @@ import {
 } from '../../config/site';
 
 export const metadata = {
-    title: 'Política de Privacidade | RN Design',
+    title: 'Política de Privacidade',
     description:
         'Como a RN Design coleta, utiliza, compartilha e protege dados pessoais, incluindo os dados tratados nas integrações com a Plataforma WhatsApp Business.',
 };
@@ -248,7 +248,12 @@ export default function PoliticaDePrivacidade() {
             <ul>
                 <li>
                     Envie uma mensagem para{' '}
-                    <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer">
+                    <a
+                        href={WHATSAPP_LINK}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={`WhatsApp da ${COMPANY_NAME} (abre em nova aba)`}
+                    >
                         {WHATSAPP_NUMBER}
                     </a>{' '}
                     com o assunto <strong>Exclusão de dados</strong>.
@@ -302,7 +307,12 @@ export default function PoliticaDePrivacidade() {
             </ul>
             <p>
                 As solicitações são feitas pelo WhatsApp{' '}
-                <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer">
+                <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`WhatsApp da ${COMPANY_NAME} (abre em nova aba)`}
+                >
                     {WHATSAPP_NUMBER}
                 </a>{' '}
                 e respondidas em até 15 (quinze) dias. Quando atuarmos como operadora,
@@ -335,7 +345,12 @@ export default function PoliticaDePrivacidade() {
             <p>
                 Dúvidas, solicitações ou reclamações sobre privacidade e proteção de dados
                 podem ser encaminhadas para a {COMPANY_NAME} pelo WhatsApp{' '}
-                <a href={WHATSAPP_LINK} target="_blank" rel="noopener noreferrer">
+                <a
+                    href={WHATSAPP_LINK}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={`WhatsApp da ${COMPANY_NAME} (abre em nova aba)`}
+                >
                     {WHATSAPP_NUMBER}
                 </a>
                 .

@@ -1,0 +1,176 @@
+.bridge {
+  position: relative;
+  z-index: 2;
+  height: clamp(var(--rn-space-9), 8vw, var(--rn-space-11));
+  margin-block: calc(var(--rn-space-6) * -1);
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  isolation: isolate;
+  view-timeline-name: --rn-bridge;
+  view-timeline-axis: block;
+}
+
+.curtain {
+  position: absolute;
+  inset: 28% 0;
+  z-index: -1;
+  opacity: 0.72;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    var(--rn-color-surface-brand),
+    transparent
+  );
+  transform: scaleX(calc(0.52 + (var(--rn-scroll-energy, 0) * 0.22)));
+  transition: transform var(--rn-duration-fast) var(--rn-ease-standard);
+}
+
+.inner {
+  width: min(calc(100% - (2 * var(--rn-page-gutter))), var(--rn-content-story));
+  display: grid;
+  grid-template-columns: auto minmax(var(--rn-space-8), 1fr) var(
+      --rn-space-9
+    ) minmax(var(--rn-space-8), 1fr) auto;
+  gap: var(--rn-space-3);
+  align-items: center;
+  color: var(--rn-color-text-muted);
+  font-size: var(--rn-font-size-1);
+  font-weight: var(--rn-weight-bold);
+  letter-spacing: var(--rn-tracking-eyebrow);
+  text-transform: uppercase;
+}
+
+.line {
+  height: var(--rn-border-width);
+  overflow: hidden;
+  background: var(--rn-color-border);
+}
+
+.line i {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background: var(--rn-gradient-progress);
+  transform: scaleX(0.36);
+  transform-origin: left;
+}
+
+.lineEnd i {
+  transform-origin: right;
+}
+
+.mark {
+  position: relative;
+  width: var(--rn-space-9);
+  aspect-ratio: 1;
+  display: block;
+}
+
+.mark img {
+  object-fit: contain;
+}
+
+.mark > i {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--rn-space-2);
+  height: var(--rn-space-2);
+  opacity: 0;
+  background: var(--rn-color-primary);
+  border-radius: var(--rn-radius-xs);
+  transform: rotate(calc(var(--rn-bridge-piece) * 90deg))
+    translateY(calc(var(--rn-space-7) * -1));
+}
+
+@supports (animation-timeline: view()) {
+  .line i {
+    animation: bridgeDraw linear both;
+    animation-timeline: --rn-bridge;
+    animation-range: entry 10% cover 55%;
+  }
+
+  .mark {
+    animation: bridgeMark linear both;
+    animation-timeline: --rn-bridge;
+    animation-range: entry 10% cover 60%;
+  }
+
+  .mark > i {
+    animation: bridgePieces linear both;
+    animation-timeline: --rn-bridge;
+    animation-range: entry 18% cover 52%;
+  }
+}
+
+@keyframes bridgeDraw {
+  from {
+    transform: scaleX(0);
+    opacity: 0.2;
+  }
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
+@keyframes bridgeMark {
+  from {
+    opacity: 0;
+    transform: scale(0.72) rotate(-8deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0);
+  }
+}
+
+@keyframes bridgePieces {
+  from {
+    opacity: 0;
+    transform: rotate(calc(var(--rn-bridge-piece) * 90deg))
+      translateY(calc(var(--rn-space-8) * -1));
+  }
+  to {
+    opacity: 0.46;
+    transform: rotate(calc(var(--rn-bridge-piece) * 90deg))
+      translateY(calc(var(--rn-space-6) * -1));
+  }
+}
+
+@media (max-width: 48rem) {
+  .inner {
+    grid-template-columns: minmax(var(--rn-space-6), 1fr) var(
+        --rn-space-8
+      ) minmax(var(--rn-space-6), 1fr);
+  }
+
+  .label {
+    display: none;
+  }
+
+  .mark {
+    width: var(--rn-space-8);
+  }
+
+  .mark > i {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .curtain,
+  .line i,
+  .mark {
+    animation: none;
+    transition: none;
+    transform: none;
+  }
+}
+
+:global(html[data-rn-quality="economy"]) .mark > i,
+:global(html[data-rn-quality="economy"]) .curtain {
+  display: none;
+}

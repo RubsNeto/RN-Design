@@ -39,6 +39,10 @@
   }
 }
 
+:global(html[data-rn-intro='seen']) .introduction {
+  display: none;
+}
+
 .brand {
   position: absolute;
   z-index: 2;

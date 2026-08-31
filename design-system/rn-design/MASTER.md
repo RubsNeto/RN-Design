@@ -1,203 +1,54 @@
-# Design System Master File
+# RN Design — contrato do site institucional
 
-> **LOGIC:** When building a specific page, first check `design-system/pages/[page-name].md`.
-> If that file exists, its rules **override** this Master file.
-> If not, strictly follow the rules below.
+Versão consumida: **@rn-design/system 2.3.0**
+Modo: **Expressive**
+Autoridade: `../system-Design-RN/design-system/rn-design-system/MASTER.md`
 
----
+Este arquivo não cria uma identidade paralela. Ele registra como o site institucional
+consome o RN Design System oficial.
 
-**Project:** RN Design
-**Generated:** 2026-01-26 16:38:52
-**Category:** Marketing Agency
+## Fundação obrigatória
 
----
+- Importar, nesta ordem, `tokens.css`, `base.css` e `components.css` de `@rn-design/system`.
+- Usar Montserrat RN como única família de marca.
+- Usar somente tokens semânticos `--rn-*` em componentes e seções.
+- Preservar o hero branco aprovado, com grid editorial de 160 × 180px.
+- Alternar capítulos claros, charcoal, stage e deep para construir ritmo narrativo.
+- Usar azul-celeste/ciano como assinatura e `--rn-color-link` nos botões azuis.
+- Por preferência explícita do projeto, todo botão com fundo azul usa texto branco.
+- Limitar conteúdo a `--rn-content-story` e gutter `--rn-page-gutter`.
+- Usar headings `rn-story-heading`, copy `rn-story-copy`, handoff e ticket oficiais.
+- Manter um ponto focal por capítulo e evitar mosaicos genéricos sem hierarquia.
 
-## Global Rules
+## Narrativa oficial do site
 
-### Color Palette
+1. Hero e abertura da marca.
+2. Autoridade e forma de pensar.
+3. Capacidades e serviços conectados.
+4. Escala técnica e fundamentos de engenharia.
+5. Processo em seis etapas.
+6. Projetos selecionados e evidência.
+7. Próximo passo e canais de contato.
 
-| Role | Hex | CSS Variable |
-|------|-----|--------------|
-| Primary | `#EC4899` | `--color-primary` |
-| Secondary | `#F472B6` | `--color-secondary` |
-| CTA/Accent | `#06B6D4` | `--color-cta` |
-| Background | `#FDF2F8` | `--color-background` |
-| Text | `#831843` | `--color-text` |
+## Motion
 
-**Color Notes:** Bold pink + cyan accent
+- Entrada de capítulo: 420–720ms, somente `transform` e `opacity`.
+- Stagger: 45ms, no máximo seis itens por sequência.
+- Loops decorativos pausam fora da viewport e somem em reduced motion.
+- Scroll e conteúdo continuam completos sem depender da animação.
+- Pointer tracking não é usado fora do hero aprovado.
+- Não usar tilt, cursor customizado ou glass pesado como linguagem recorrente.
 
-### Typography
+## Responsividade e acessibilidade
 
-- **Heading Font:** Archivo
-- **Body Font:** Space Grotesk
-- **Mood:** minimal, portfolio, designer, creative, clean, artistic
-- **Google Fonts:** [Archivo + Space Grotesk](https://fonts.google.com/share?selection.family=Archivo:wght@300;400;500;600;700|Space+Grotesk:wght@300;400;500;600;700)
+- Validar 375, 768, 1024 e 1440px, além de landscape.
+- Alvos interativos têm pelo menos 44 × 44px e foco visível de 3px.
+- Nenhuma informação existe apenas em hover, cor, imagem ou motion.
+- Imagens de projeto e fundador recebem texto alternativo; motivos são decorativos.
+- Reduced motion preserva o estado final e desativa parallax, loops e deslocamentos amplos.
+- Não existe scroll horizontal na página.
 
-**CSS Import:**
-```css
-@import url('https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
-```
+## Fonte de auditoria
 
-### Spacing Variables
-
-| Token | Value | Usage |
-|-------|-------|-------|
-| `--space-xs` | `4px` / `0.25rem` | Tight gaps |
-| `--space-sm` | `8px` / `0.5rem` | Icon gaps, inline spacing |
-| `--space-md` | `16px` / `1rem` | Standard padding |
-| `--space-lg` | `24px` / `1.5rem` | Section padding |
-| `--space-xl` | `32px` / `2rem` | Large gaps |
-| `--space-2xl` | `48px` / `3rem` | Section margins |
-| `--space-3xl` | `64px` / `4rem` | Hero padding |
-
-### Shadow Depths
-
-| Level | Value | Usage |
-|-------|-------|-------|
-| `--shadow-sm` | `0 1px 2px rgba(0,0,0,0.05)` | Subtle lift |
-| `--shadow-md` | `0 4px 6px rgba(0,0,0,0.1)` | Cards, buttons |
-| `--shadow-lg` | `0 10px 15px rgba(0,0,0,0.1)` | Modals, dropdowns |
-| `--shadow-xl` | `0 20px 25px rgba(0,0,0,0.15)` | Hero images, featured cards |
-
----
-
-## Component Specs
-
-### Buttons
-
-```css
-/* Primary Button */
-.btn-primary {
-  background: #06B6D4;
-  color: white;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.btn-primary:hover {
-  opacity: 0.9;
-  transform: translateY(-1px);
-}
-
-/* Secondary Button */
-.btn-secondary {
-  background: transparent;
-  color: #EC4899;
-  border: 2px solid #EC4899;
-  padding: 12px 24px;
-  border-radius: 8px;
-  font-weight: 600;
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-```
-
-### Cards
-
-```css
-.card {
-  background: #FDF2F8;
-  border-radius: 12px;
-  padding: 24px;
-  box-shadow: var(--shadow-md);
-  transition: all 200ms ease;
-  cursor: pointer;
-}
-
-.card:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
-```
-
-### Inputs
-
-```css
-.input {
-  padding: 12px 16px;
-  border: 1px solid #E2E8F0;
-  border-radius: 8px;
-  font-size: 16px;
-  transition: border-color 200ms ease;
-}
-
-.input:focus {
-  border-color: #EC4899;
-  outline: none;
-  box-shadow: 0 0 0 3px #EC489920;
-}
-```
-
-### Modals
-
-```css
-.modal-overlay {
-  background: rgba(0, 0, 0, 0.5);
-  backdrop-filter: blur(4px);
-}
-
-.modal {
-  background: white;
-  border-radius: 16px;
-  padding: 32px;
-  box-shadow: var(--shadow-xl);
-  max-width: 500px;
-  width: 90%;
-}
-```
-
----
-
-## Style Guidelines
-
-**Style:** Motion-Driven
-
-**Keywords:** Animation-heavy, microinteractions, smooth transitions, scroll effects, parallax, entrance anim, page transitions
-
-**Best For:** Portfolio sites, storytelling platforms, interactive experiences, entertainment apps, creative, SaaS
-
-**Key Effects:** Scroll anim (Intersection Observer), hover (300-400ms), entrance, parallax (3-5 layers), page transitions
-
-### Page Pattern
-
-**Pattern Name:** Portfolio Grid
-
-- **Conversion Strategy:**  hover overlay info,  lightbox view, Visuals first. Filter by category. Fast loading essential.
-- **CTA Placement:** Project Card Hover + Footer Contact
-- **Section Order:** 1. Hero (Name/Role), 2. Project Grid (Masonry), 3. About/Philosophy, 4. Contact
-
----
-
-## Anti-Patterns (Do NOT Use)
-
-- ❌ Boring design
-- ❌ Hidden work
-
-### Additional Forbidden Patterns
-
-- ❌ **Emojis as icons** — Use SVG icons (Heroicons, Lucide, Simple Icons)
-- ❌ **Missing cursor:pointer** — All clickable elements must have cursor:pointer
-- ❌ **Layout-shifting hovers** — Avoid scale transforms that shift layout
-- ❌ **Low contrast text** — Maintain 4.5:1 minimum contrast ratio
-- ❌ **Instant state changes** — Always use transitions (150-300ms)
-- ❌ **Invisible focus states** — Focus states must be visible for a11y
-
----
-
-## Pre-Delivery Checklist
-
-Before delivering any UI code, verify:
-
-- [ ] No emojis used as icons (use SVG instead)
-- [ ] All icons from consistent icon set (Heroicons/Lucide)
-- [ ] `cursor-pointer` on all clickable elements
-- [ ] Hover states with smooth transitions (150-300ms)
-- [ ] Light mode: text contrast 4.5:1 minimum
-- [ ] Focus states visible for keyboard navigation
-- [ ] `prefers-reduced-motion` respected
-- [ ] Responsive: 375px, 768px, 1024px, 1440px
-- [ ] No content hidden behind fixed navbars
-- [ ] No horizontal scroll on mobile
+As decisões implementadas e sua relação com o sistema estão registradas em
+[`PREMIUM-SITE-AUDIT.md`](./PREMIUM-SITE-AUDIT.md).

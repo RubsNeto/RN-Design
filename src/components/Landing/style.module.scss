@@ -182,7 +182,7 @@
   width: 100%;
   height: 100%;
   transform: translate3d(var(--rn-balance-x), 0, 0) rotate(var(--rn-balance-rotation));
-  transition: transform 420ms var(--rn-ease-emphasized);
+  transition: transform var(--rn-duration-slow) var(--rn-ease-emphasized);
 }
 
 .brandBalance,
@@ -270,7 +270,7 @@
   position: absolute;
   z-index: 0;
   opacity: 0;
-  transition: opacity 520ms var(--rn-ease-standard);
+  transition: opacity var(--rn-duration-entry) var(--rn-ease-standard);
   pointer-events: none;
 }
 
@@ -316,18 +316,18 @@
     ) 52% center / 1px 100% no-repeat,
     radial-gradient(
       ellipse 27% 37% at 50% 46%,
-      rgb(255 255 255 / 96%) 0%,
-      rgb(255 255 255 / 64%) 42%,
+      color-mix(in srgb, var(--rn-neutral-0) 96%, transparent) 0%,
+      color-mix(in srgb, var(--rn-neutral-0) 64%, transparent) 42%,
       transparent 76%
     ),
-    radial-gradient(circle at 18% 62%, rgb(67 201 235 / 16%), transparent 29%),
-    radial-gradient(circle at 83% 35%, rgb(66 139 238 / 14%), transparent 30%);
+    radial-gradient(circle at 18% 62%, color-mix(in srgb, var(--rn-cyan) 16%, transparent), transparent 29%),
+    radial-gradient(circle at 83% 35%, color-mix(in srgb, var(--rn-blue-soft) 14%, transparent), transparent 30%);
   transform: translate3d(-0.4%, 0, 0) scale(1.012);
 }
 
 .landing[data-brand-ambient='true'] {
   .atmosphere {
-    animation: atmosphereBreath 24s ease-in-out infinite;
+    animation: atmosphereBreath calc(var(--rn-duration-ambient) / 2.6667) ease-in-out infinite;
     will-change: transform, opacity;
   }
 }
@@ -350,7 +350,7 @@
 .gridTideHorizontal,
 .gridTideVertical {
   opacity: 0;
-  background: linear-gradient(90deg, transparent, rgb(51 181 231 / 72%), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--rn-color-primary) 72%, transparent), transparent);
 }
 
 .gridTideHorizontal {
@@ -366,7 +366,7 @@
   left: 50%;
   width: 1px;
   height: 100%;
-  background: linear-gradient(180deg, transparent, rgb(51 181 231 / 62%), transparent);
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--rn-color-primary) 62%, transparent), transparent);
   transform: translate3d(0, 0, 0) scaleY(0);
 }
 
@@ -381,7 +381,7 @@
 .signalLine {
   inset: 0;
   opacity: 0;
-  background: linear-gradient(90deg, transparent, rgb(50 188 231 / 68%), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--rn-cyan) 68%, transparent), transparent);
   transform: translate3d(0, 0, 0) scaleX(0);
   transform-origin: left center;
 }
@@ -401,10 +401,10 @@
   width: 7px;
   height: 7px;
   margin: -3px 0 0 -3px;
-  border: 1px solid rgb(34 166 220 / 78%);
+  border: 1px solid color-mix(in srgb, var(--rn-color-link) 78%, transparent);
   border-radius: 50%;
   opacity: 0;
-  background: rgb(255 255 255 / 92%);
+  background: color-mix(in srgb, var(--rn-neutral-0) 92%, transparent);
   transform: translate3d(0, 0, 0) scale(0.45);
 }
 
@@ -416,9 +416,9 @@
   height: 13.75rem;
   border-radius: 50%;
   opacity: 0;
-  background: radial-gradient(circle, rgb(45 183 231 / 15%), rgb(66 139 238 / 6%) 42%, transparent 72%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--rn-color-primary) 15%, transparent), color-mix(in srgb, var(--rn-blue-soft) 6%, transparent) 42%, transparent 72%);
   transform: translate3d(var(--rn-halo-x), var(--rn-halo-y), 0) scale(0.82);
-  transition: opacity 720ms var(--rn-ease-standard);
+  transition: opacity var(--rn-duration-scene) var(--rn-ease-standard);
 }
 
 .landing[data-pointer-active='true'] .cursorHalo {
@@ -436,8 +436,8 @@
   opacity: 0;
   transform: translate3d(var(--rn-magnetic-x), var(--rn-magnetic-y), 0);
   transition:
-    opacity 360ms var(--rn-ease-standard),
-    transform 420ms var(--rn-ease-emphasized);
+    opacity calc(var(--rn-duration-slow) - var(--rn-stagger-word)) var(--rn-ease-standard),
+    transform var(--rn-duration-slow) var(--rn-ease-emphasized);
 }
 
 .magneticGrid i {
@@ -446,10 +446,10 @@
   width: 7px;
   height: 7px;
   margin: -3px 0 0 -3px;
-  border: 1px solid rgb(31 166 221 / 78%);
+  border: 1px solid color-mix(in srgb, var(--rn-color-link) 78%, transparent);
   border-radius: 50%;
-  background: rgb(255 255 255 / 88%);
-  box-shadow: 0 0 0 3px rgb(46 185 231 / 8%);
+  background: color-mix(in srgb, var(--rn-neutral-0) 88%, transparent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--rn-color-primary) 8%, transparent);
 }
 
 .magneticGrid i:nth-child(2) {
@@ -485,7 +485,7 @@
   height: 68%;
   border-radius: 50%;
   opacity: 0;
-  background: radial-gradient(ellipse, rgb(17 54 89 / 18%), rgb(47 175 224 / 9%) 48%, transparent 72%);
+  background: radial-gradient(ellipse, color-mix(in srgb, var(--rn-brand-900) 18%, transparent), color-mix(in srgb, var(--rn-color-primary) 9%, transparent) 48%, transparent 72%);
   transform: translate3d(-50%, -50%, 0) scale(0.98);
 }
 
@@ -514,7 +514,7 @@
 
 .landing[data-brand-ambient='true'] {
   .portraitShadow {
-    animation: opticalShadowBreath 12s ease-in-out infinite;
+    animation: opticalShadowBreath calc(var(--rn-duration-ambient) / 5.3333) ease-in-out infinite;
     will-change: transform, opacity;
   }
 }
@@ -551,7 +551,7 @@
   right: -12%;
   left: -12%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgb(42 176 227 / 66%), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--rn-color-primary) 66%, transparent), transparent);
   transform: translate3d(0, 0, 0) scaleX(0);
 }
 
@@ -560,7 +560,7 @@
   bottom: -12%;
   left: 50%;
   width: 1px;
-  background: linear-gradient(180deg, transparent, rgb(42 176 227 / 58%), transparent);
+  background: linear-gradient(180deg, transparent, color-mix(in srgb, var(--rn-color-primary) 58%, transparent), transparent);
   transform: translate3d(0, 0, 0) scaleY(0);
 }
 
@@ -570,7 +570,7 @@
   width: 10px;
   height: 10px;
   margin: -5px 0 0 -5px;
-  border: 1px solid rgb(42 176 227 / 82%);
+  border: 1px solid color-mix(in srgb, var(--rn-color-primary) 82%, transparent);
   border-radius: 50%;
   transform: translate3d(0, 0, 0) scale(0.4);
 }
@@ -604,7 +604,7 @@
   inset: 0;
   opacity: 0;
   transform: translate3d(0, 0, 0);
-  transition: opacity 620ms var(--rn-ease-standard);
+  transition: opacity var(--rn-duration-reveal) var(--rn-ease-standard);
 }
 
 .photoEchoImage {
@@ -624,7 +624,7 @@
   inset: 0;
   display: block;
   opacity: 0;
-  background: rgb(255 255 255 / 10%);
+  background: color-mix(in srgb, var(--rn-neutral-0) 10%, transparent);
   pointer-events: none;
 }
 
@@ -650,7 +650,7 @@
   width: 18%;
   height: 3px;
   border-radius: 999px;
-  background: linear-gradient(90deg, transparent, rgb(255 255 255 / 88%), var(--rn-color-link), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--rn-neutral-0) 88%, transparent), var(--rn-color-link), transparent);
   transform: translate3d(-120%, 0, 0) scaleX(0.65);
 }
 
@@ -716,8 +716,8 @@
 
 .landing[data-hero-settled='true'][data-logo-interaction='active']
   :global(.rn-story-wordmark__symbol-piece) {
-  animation: logoPieceMagnet 900ms var(--rn-ease-emphasized) both;
-  animation-delay: calc(var(--rn-piece-index, 0) * 20ms);
+  animation: logoPieceMagnet var(--rn-duration-count) var(--rn-ease-emphasized) both;
+  animation-delay: calc(var(--rn-piece-index, 0) * var(--rn-stagger-word) / 2);
   will-change: transform, opacity;
 }
 
@@ -728,96 +728,96 @@
   width: clamp(2.5rem, 5vw, 4.5rem);
   height: clamp(8rem, 16vh, 12rem);
   opacity: 0;
-  background: linear-gradient(145deg, transparent 8%, rgb(80 208 239 / 38%) 48%, transparent 84%);
+  background: linear-gradient(145deg, transparent 8%, color-mix(in srgb, var(--rn-cyan) 38%, transparent) 48%, transparent 84%);
   transform: translate3d(-12px, 6px, 0) rotate(-18deg) scaleY(0.82);
   mix-blend-mode: screen;
 }
 
 .landing[data-brand-ambient='true'] .shoulderReflection {
-  animation: rimLightAmbient 10s ease-in-out infinite;
+  animation: rimLightAmbient calc(var(--rn-duration-ambient) / 6.4) ease-in-out infinite;
   will-change: transform, opacity;
 }
 
 .landing[data-hero-effect='grid-tide'] {
   .gridTideHorizontal {
-    animation: gridTideHorizontal 1800ms var(--rn-ease-emphasized) both;
+    animation: gridTideHorizontal calc(var(--rn-duration-count) * 2) var(--rn-ease-emphasized) both;
   }
 
   .gridTideVertical {
-    animation: gridTideVertical 1800ms var(--rn-ease-emphasized) 120ms both;
+    animation: gridTideVertical calc(var(--rn-duration-count) * 2) var(--rn-ease-emphasized) calc(var(--rn-duration-base) / 2) both;
   }
 }
 
 .landing[data-hero-effect='signal-handshake'] {
   .signalLine {
-    animation: signalLine 1600ms var(--rn-ease-emphasized) both;
+    animation: signalLine calc(var(--rn-duration-chapter) * 2) var(--rn-ease-emphasized) both;
   }
 
   .signalDot {
-    animation: signalDot 1600ms var(--rn-ease-standard) both;
+    animation: signalDot calc(var(--rn-duration-chapter) * 2) var(--rn-ease-standard) both;
   }
 }
 
 .landing[data-hero-effect='constellation'] .constellation i {
-  animation: constellationPoint 2100ms var(--rn-ease-emphasized) both;
-  animation-delay: calc(var(--rn-effect-index) * 120ms);
+  animation: constellationPoint calc(var(--rn-duration-scene) * 3) var(--rn-ease-emphasized) both;
+  animation-delay: calc(var(--rn-effect-index) * var(--rn-duration-base) / 2);
 }
 
 .landing[data-hero-effect='star-echo'] .starEcho {
-  animation: starEcho 1500ms var(--rn-ease-emphasized) both;
+  animation: starEcho calc(var(--rn-duration-scene) * 2) var(--rn-ease-emphasized) both;
 }
 
 .landing[data-hero-effect='star-echo'] .starEcho:nth-child(2) {
-  animation-delay: 140ms;
+  animation-delay: var(--rn-duration-fast);
 }
 
 .landing[data-hero-effect='star-sparks'] .starSparks i {
-  animation: starSpark 1100ms var(--rn-ease-emphasized) both;
-  animation-delay: calc(var(--rn-effect-index) * 50ms);
+  animation: starSpark calc(var(--rn-duration-entry) * 2) var(--rn-ease-emphasized) both;
+  animation-delay: calc(var(--rn-effect-index) * var(--rn-stagger-word));
 }
 
 .landing[data-hero-effect='rare-alignment'] {
   .rareAlignment i:first-child {
-    animation: alignmentHorizontal 900ms var(--rn-ease-emphasized) both;
+    animation: alignmentHorizontal var(--rn-duration-count) var(--rn-ease-emphasized) both;
   }
 
   .rareAlignment i:nth-child(2) {
-    animation: alignmentVertical 900ms var(--rn-ease-emphasized) 70ms both;
+    animation: alignmentVertical var(--rn-duration-count) var(--rn-ease-emphasized) var(--rn-stagger-wordmark) both;
   }
 
   .rareAlignment b {
-    animation: alignmentPoint 900ms var(--rn-ease-emphasized) 150ms both;
+    animation: alignmentPoint var(--rn-duration-count) var(--rn-ease-emphasized) var(--rn-duration-fast) both;
   }
 }
 
 .landing[data-hero-effect='shoulder-reflection'] {
   :global(.rn-story-wordmark__symbol)::after {
-    animation: originReflection 920ms var(--rn-ease-emphasized) both;
+    animation: originReflection var(--rn-duration-count) var(--rn-ease-emphasized) both;
   }
 
   .shoulderReflection {
-    animation: shoulderReflection 980ms var(--rn-ease-emphasized) 180ms both;
+    animation: shoulderReflection calc(var(--rn-duration-count) + var(--rn-stagger-word)) var(--rn-ease-emphasized) var(--rn-duration-fast) both;
   }
 }
 
 .landing[data-hero-effect='wordmark-glint'] :global(.rn-story-wordmark__letters)::after {
-  animation: wordmarkLightSweep 880ms var(--rn-ease-emphasized) both;
+  animation: wordmarkLightSweep var(--rn-duration-count) var(--rn-ease-emphasized) both;
 }
 
 .landing[data-hero-effect='semantic-handoff'] {
   .titleAccent::after {
-    animation: semanticUnderline 720ms var(--rn-ease-emphasized) both;
+    animation: semanticUnderline var(--rn-duration-scene) var(--rn-ease-emphasized) both;
   }
 
   .asideTitleAccent::after {
-    animation: semanticUnderline 720ms var(--rn-ease-emphasized) 620ms both;
+    animation: semanticUnderline var(--rn-duration-scene) var(--rn-ease-emphasized) calc(var(--rn-duration-entry) + var(--rn-stagger-word)) both;
     transform-origin: right center;
   }
 }
 
 .landing[data-hero-effect='silence-beat'] {
 .silenceSurface {
-    animation: silenceSurfacePulse 2600ms ease-in-out both;
+    animation: silenceSurfacePulse calc(var(--rn-duration-chapter) * 3) ease-in-out both;
   }
 }
 
@@ -830,7 +830,7 @@
   display: block;
   height: 1px;
   opacity: var(--rn-handoff-progress);
-  background: linear-gradient(90deg, transparent, rgb(49 185 232 / 62%), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--rn-color-primary) 62%, transparent), transparent);
   transform: translate3d(0, 0, 0) scaleX(var(--rn-handoff-progress));
   transform-origin: center;
   pointer-events: none;
