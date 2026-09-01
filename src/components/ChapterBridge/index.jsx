@@ -6,7 +6,7 @@ const labels = {
   services: ["Capacidade aplicada", "Engenharia preparada"],
   scale: ["Base construída", "Processo visível"],
   process: ["Decisão documentada", "Projeto em operação"],
-  work: ["Evidência apresentada", "Próximo passo"],
+  work: ["Evidência apresentada", "06 · Próximo passo"],
 };
 
 export default function ChapterBridge({ chapter }) {
@@ -20,15 +20,7 @@ export default function ChapterBridge({ chapter }) {
           <i />
         </span>
         <span className={styles.mark}>
-          <Image
-            src="/images/estrela-rn-contorno.svg"
-            fill
-            sizes="5rem"
-            alt=""
-          />
-          {Array.from({ length: 4 }, (_, index) => (
-            <i key={index} style={{ "--rn-bridge-piece": index }} />
-          ))}
+          <Image src="/favicon.svg" fill sizes="5rem" alt="" />
         </span>
         <span className={`${styles.line} ${styles.lineEnd}`}>
           <i />

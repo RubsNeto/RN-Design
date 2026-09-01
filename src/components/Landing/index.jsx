@@ -43,7 +43,7 @@ const sparkPoints = [
   ['50%', '50%'],
 ];
 
-function HeroEffects({ haloRef, magneticGridRef }) {
+function HeroEffects({ haloRef }) {
   return (
     <div className={styles.effectsLayer} aria-hidden="true">
       <span className={styles.atmosphere} />
@@ -64,12 +64,6 @@ function HeroEffects({ haloRef, magneticGridRef }) {
         ))}
       </span>
       <span ref={haloRef} className={styles.cursorHalo} />
-      <span ref={magneticGridRef} className={styles.magneticGrid}>
-        <i />
-        <i />
-        <i />
-        <i />
-      </span>
     </div>
   );
 }
@@ -110,7 +104,6 @@ export default function Landing({ isReady = false, onHeroAssetReady }) {
   const photoStageRef = useRef(null);
   const photoEchoRef = useRef(null);
   const haloRef = useRef(null);
-  const magneticGridRef = useRef(null);
   const hasReportedPhotoReady = useRef(false);
   const shouldReduceMotion = useReducedMotion();
   const isInView = useInView(sectionRef, { amount: 0.15 });
@@ -232,8 +225,6 @@ export default function Landing({ isReady = false, onHeroAssetReady }) {
     let pointerNeedsUpdate = false;
     let scrollNeedsUpdate = true;
     let lastScrollProgress = -1;
-    let lastMagneticGridX = null;
-    let lastMagneticGridY = null;
     let logoInteractionOnCooldown = false;
     let logoInteractionResetTimer;
     let logoInteractionCooldownTimer;
@@ -267,15 +258,6 @@ export default function Landing({ isReady = false, onHeroAssetReady }) {
         photoEchoRef.current?.style.setProperty('--rn-photo-echo-x', `${normalizedX * 5}px`);
         haloRef.current?.style.setProperty('--rn-halo-x', `${localX - 110}px`);
         haloRef.current?.style.setProperty('--rn-halo-y', `${localY - 110}px`);
-
-        const snappedGridX = Math.round(localX / 160) * 160;
-        const snappedGridY = Math.round(localY / 180) * 180;
-        if (snappedGridX !== lastMagneticGridX || snappedGridY !== lastMagneticGridY) {
-          magneticGridRef.current?.style.setProperty('--rn-magnetic-x', `${snappedGridX}px`);
-          magneticGridRef.current?.style.setProperty('--rn-magnetic-y', `${snappedGridY}px`);
-          lastMagneticGridX = snappedGridX;
-          lastMagneticGridY = snappedGridY;
-        }
 
         if (
           localY > bounds.height * 0.72
@@ -332,10 +314,6 @@ export default function Landing({ isReady = false, onHeroAssetReady }) {
       photoStageRef.current?.style.setProperty('--rn-photo-pointer-x', '0px');
       photoStageRef.current?.style.setProperty('--rn-photo-pointer-y', '0px');
       photoEchoRef.current?.style.setProperty('--rn-photo-echo-x', '0px');
-      magneticGridRef.current?.style.setProperty('--rn-magnetic-x', '-20rem');
-      magneticGridRef.current?.style.setProperty('--rn-magnetic-y', '-20rem');
-      lastMagneticGridX = null;
-      lastMagneticGridY = null;
     };
 
     const updateScrollDepth = () => {
@@ -384,7 +362,7 @@ export default function Landing({ isReady = false, onHeroAssetReady }) {
       data-hero-settled={hasEntranceSettled ? 'true' : 'false'}
       data-logo-interaction="idle"
     >
-      <HeroEffects haloRef={haloRef} magneticGridRef={magneticGridRef} />
+      <HeroEffects haloRef={haloRef} />
       <div className={`rn-story-hero__content ${styles.heroContent}`}>
         <div className={styles.primary}>
           <motion.div
@@ -427,8 +405,6 @@ export default function Landing({ isReady = false, onHeroAssetReady }) {
                     alt=""
                     className={styles.contourImage}
                   />
-                  <i className={`${styles.orbitDot} ${styles.orbitDotPrimary}`} />
-                  <i className={`${styles.orbitDot} ${styles.orbitDotSecondary}`} />
                 </div>
               </div>
             </div>
@@ -482,7 +458,7 @@ export default function Landing({ isReady = false, onHeroAssetReady }) {
             transition={entranceTransition(0.65, 0.1, emphasizedEase)}
           >
             <p className={`rn-eyebrow ${styles.asideEyebrow}`}>
-              Branding · Marketing Digital · Consultoria · Suporte
+              Branding · Marketing Digital · Consultoria
             </p>
             <h2 className={`rn-story-title ${styles.asideTitle}`}>
               <span className={styles.asideTitleLead}>Estratégia aplicada</span>

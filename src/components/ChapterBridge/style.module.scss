@@ -29,9 +29,9 @@
 .inner {
   width: min(calc(100% - (2 * var(--rn-page-gutter))), var(--rn-content-story));
   display: grid;
-  grid-template-columns: auto minmax(var(--rn-space-8), 1fr) var(
+  grid-template-columns: minmax(0, 13rem) minmax(var(--rn-space-8), 1fr) var(
       --rn-space-9
-    ) minmax(var(--rn-space-8), 1fr) auto;
+    ) minmax(var(--rn-space-8), 1fr) minmax(0, 13rem);
   gap: var(--rn-space-3);
   align-items: center;
   color: var(--rn-color-text-muted);
@@ -39,6 +39,15 @@
   font-weight: var(--rn-weight-bold);
   letter-spacing: var(--rn-tracking-eyebrow);
   text-transform: uppercase;
+}
+
+.label {
+  width: 100%;
+  white-space: nowrap;
+}
+
+.label:last-child {
+  text-align: right;
 }
 
 .line {
@@ -71,19 +80,6 @@
   object-fit: contain;
 }
 
-.mark > i {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: var(--rn-space-2);
-  height: var(--rn-space-2);
-  opacity: 0;
-  background: var(--rn-color-primary);
-  border-radius: var(--rn-radius-xs);
-  transform: rotate(calc(var(--rn-bridge-piece) * 90deg))
-    translateY(calc(var(--rn-space-7) * -1));
-}
-
 @supports (animation-timeline: view()) {
   .line i {
     animation: bridgeDraw linear both;
@@ -95,12 +91,6 @@
     animation: bridgeMark linear both;
     animation-timeline: --rn-bridge;
     animation-range: entry 10% cover 60%;
-  }
-
-  .mark > i {
-    animation: bridgePieces linear both;
-    animation-timeline: --rn-bridge;
-    animation-range: entry 18% cover 52%;
   }
 }
 
@@ -126,19 +116,6 @@
   }
 }
 
-@keyframes bridgePieces {
-  from {
-    opacity: 0;
-    transform: rotate(calc(var(--rn-bridge-piece) * 90deg))
-      translateY(calc(var(--rn-space-8) * -1));
-  }
-  to {
-    opacity: 0.46;
-    transform: rotate(calc(var(--rn-bridge-piece) * 90deg))
-      translateY(calc(var(--rn-space-6) * -1));
-  }
-}
-
 @media (max-width: 48rem) {
   .inner {
     grid-template-columns: minmax(var(--rn-space-6), 1fr) var(
@@ -153,11 +130,6 @@
   .mark {
     width: var(--rn-space-8);
   }
-
-  .mark > i {
-    animation: none;
-    opacity: 0;
-  }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -170,7 +142,6 @@
   }
 }
 
-:global(html[data-rn-quality="economy"]) .mark > i,
 :global(html[data-rn-quality="economy"]) .curtain {
   display: none;
 }

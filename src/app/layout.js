@@ -69,11 +69,6 @@ export default function RootLayout({ children }) {
     <html lang="pt-BR" suppressHydrationWarning>
       <body>
         <script
-          dangerouslySetInnerHTML={{
-            __html: "try{if(sessionStorage.getItem('rn-intro-seen')==='true'){document.documentElement.dataset.rnIntro='seen'}}catch(e){}",
-          }}
-        />
-        <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(ORGANIZATION_JSON_LD) }}
         />

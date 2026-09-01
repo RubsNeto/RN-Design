@@ -49,11 +49,11 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [isHeroReady, setIsHeroReady] = useState(false);
   const [isHeroAssetReady, setIsHeroAssetReady] = useState(false);
+  const [areHeroFontsReady, setAreHeroFontsReady] = useState(false);
   const [hasMinimumLoadTimeElapsed, setHasMinimumLoadTimeElapsed] =
     useState(false);
   const bodyStateRef = useRef({ cursor: "", overflow: "" });
   const chromeStateRef = useRef([]);
-  const maximumLoadTimerRef = useRef();
   const hasCompletedIntroRef = useRef(false);
   const initialHashRef = useRef("");
   const markHeroAssetReady = useCallback(() => setIsHeroAssetReady(true), []);
@@ -62,20 +62,8 @@ export default function Home() {
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    const saveData = Boolean(navigator.connection?.saveData);
-    const hasSeenIntro =
-      window.sessionStorage.getItem("rn-intro-seen") === "true";
     initialHashRef.current = window.location.hash;
-
-    if (hasSeenIntro) {
-      hasCompletedIntroRef.current = true;
-      setHasMinimumLoadTimeElapsed(true);
-      setIsLoading(false);
-      setIsHeroReady(true);
-      return undefined;
-    }
-
-    window.sessionStorage.setItem("rn-intro-seen", "true");
+    delete document.documentElement.dataset.rnIntro;
 
     const previousOverflow = document.body.style.overflow;
     const previousCursor = document.body.style.cursor;
@@ -100,23 +88,21 @@ export default function Home() {
       element.setAttribute("aria-hidden", "true");
     });
 
+    if (document.fonts?.ready) {
+      document.fonts.ready
+        .then(() => setAreHeroFontsReady(true))
+        .catch(() => setAreHeroFontsReady(true));
+    } else {
+      setAreHeroFontsReady(true);
+    }
+
     const minimumTimer = window.setTimeout(
       () => setHasMinimumLoadTimeElapsed(true),
-      reducedMotion || saveData ? 180 : 1500,
-    );
-    maximumLoadTimerRef.current = window.setTimeout(
-      () => {
-        maximumLoadTimerRef.current = undefined;
-        setIsLoading(false);
-      },
-      reducedMotion || saveData ? 520 : 2800,
+      reducedMotion ? 900 : 1500,
     );
 
     return () => {
       window.clearTimeout(minimumTimer);
-      if (maximumLoadTimerRef.current) {
-        window.clearTimeout(maximumLoadTimerRef.current);
-      }
       document.body.style.overflow = previousOverflow;
       document.body.style.cursor = previousCursor;
       restoreChromeState(chromeStateRef.current);
@@ -124,20 +110,20 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (!isLoading || !hasMinimumLoadTimeElapsed || !isHeroAssetReady) return;
+    if (
+      !isLoading
+      || !hasMinimumLoadTimeElapsed
+      || !isHeroAssetReady
+      || !areHeroFontsReady
+    ) return;
 
-    if (maximumLoadTimerRef.current) {
-      window.clearTimeout(maximumLoadTimerRef.current);
-      maximumLoadTimerRef.current = undefined;
-    }
     setIsLoading(false);
-  }, [hasMinimumLoadTimeElapsed, isHeroAssetReady, isLoading]);
+  }, [areHeroFontsReady, hasMinimumLoadTimeElapsed, isHeroAssetReady, isLoading]);
 
   const completeIntro = () => {
     if (hasCompletedIntroRef.current) return;
 
     hasCompletedIntroRef.current = true;
-    window.sessionStorage.setItem("rn-intro-seen", "true");
     setIsHeroReady(true);
     document.body.style.overflow = bodyStateRef.current.overflow;
     document.body.style.cursor = bodyStateRef.current.cursor || "default";
