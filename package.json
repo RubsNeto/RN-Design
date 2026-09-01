@@ -12,7 +12,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@rn-design/system": "file:../system-Design-RN",
+    "@rn-design/system": "file:vendor/rn-design-system-2.3.0.tgz",
     "eslint": "8.45.0",
     "eslint-config-next": "13.4.10",
     "framer-motion": "^10.13.0",
